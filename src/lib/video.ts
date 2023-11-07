@@ -45,7 +45,7 @@ export async function getVideos() {
   )
   const res: JSONResponse = await response.json()
 
-  const videos = res.data.list.vlist || []
+  const videos = (res.data.list && res.data.list.vlist) || []
 
   for (let index = 0; index < videos.length; index++) {
     const vitem = videos[index]
