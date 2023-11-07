@@ -27,6 +27,7 @@ export default function Blog({
   initialDisplayPosts,
   pagination,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
+  console.log('posts:', posts)
   return (
     <>
       <PageSEO title={`全部文章 - ${siteMetadata.author}`} description={siteMetadata.description} />

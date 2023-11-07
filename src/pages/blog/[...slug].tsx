@@ -43,6 +43,8 @@ export const getStaticProps: GetStaticProps<{
   })
   const authorDetails = await Promise.all(authorPromise)
 
+  console.log('slug:', slug)
+  console.log('getFileBySlug post:', post)
   // rss
   if (allPosts.length > 0) {
     const rss = generateRss(allPosts)
