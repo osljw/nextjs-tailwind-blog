@@ -2,16 +2,54 @@ import fs from 'fs'
 import PageTitle from '@/components/PageTitle'
 import generateRss from '@/lib/generate-rss'
 import { MDXLayoutRenderer } from '@/components/MDXComponents'
-import { formatSlug, getAllFilesFrontMatter, getFileBySlug, getFiles } from '@/lib/mdx'
+import {
+  formatSlug,
+  getAllFilesFrontMatter,
+  getFileBySlug,
+  getFiles,
+  getMDXSource,
+} from '@/lib/mdx'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
 import { AuthorFrontMatter } from 'types/AuthorFrontMatter'
 import { PostFrontMatter } from 'types/PostFrontMatter'
 import { Toc } from 'types/Toc'
+import readingTime from 'reading-time'
+import { getArticle, getArticleList, getArticleSlugList } from '@/lib/backend'
 
 const DEFAULT_LAYOUT = 'PostLayout'
+const DEFAULT_DATA_FROM = 'backend' // file | backend
+
+async function getPostBySlug(slug) {
+  const data = await getArticle(slug)
+  const source = data.body
+  console.log('getPostBySlug')
+
+  const { code, toc, frontmatter } = await getMDXSource(source)
+
+  return {
+    mdxSource: code,
+    toc,
+    frontMatter: {
+      readingTime: readingTime(code),
+      slug: slug || null,
+      fileName: null,
+      ...frontmatter,
+      date: frontmatter.date ? new Date(frontmatter.date).toISOString() : null,
+      draft: false,
+    },
+  }
+}
 
 export async function getStaticPaths() {
-  const posts = getFiles('blog')
+  let posts
+
+  if (DEFAULT_DATA_FROM === 'file') {
+    posts = getFiles('blog').filter((post) => post.endsWith('md'))
+  } else {
+    posts = await getArticleSlugList()
+  }
+
+  console.log('/blog/* getStaticPaths=========:')
   return {
     paths: posts.map((p) => ({
       params: {
@@ -29,12 +67,30 @@ export const getStaticProps: GetStaticProps<{
   prev?: { slug: string; title: string }
   next?: { slug: string; title: string }
 }> = async ({ params }) => {
+  console.log('/blog/* getStaticProps slug:', params.slug)
+
+  let post
+
   const slug = (params.slug as string[]).join('/')
   const allPosts = await getAllFilesFrontMatter('blog')
+  // const allPosts = await getArticleList()
   const postIndex = allPosts.findIndex((post) => formatSlug(post.slug) === slug)
   const prev: { slug: string; title: string } = allPosts[postIndex + 1] || null
   const next: { slug: string; title: string } = allPosts[postIndex - 1] || null
-  const post = await getFileBySlug<PostFrontMatter>('blog', slug)
+  // const post = await getFileBySlug<PostFrontMatter>('blog', slug)
+  post = await getPostBySlug(slug)
+  // post: {
+  //   mdxSource: 'var Component=(()=>{var m=Object.create;var a=Object.defineProperty;var x=Object.getOwnPropertyDescriptor;var _=Object.getOwnPropertyNames;var f=Object.getPrototypeOf,j=Object.prototype.hasOwnProperty;var p=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),d=(t,e)=>{for(var n in e)a(t,n,{get:e[n],enumerable:!0})},u=(t,e,n,s)=>{if(e&&typeof e=="object"||typeof e=="function")for(let o of _(e))!j.call(t,o)&&o!==n&&a(t,o,{get:()=>e[o],enumerable:!(s=x(e,o))||s.enumerable});return t};var g=(t,e,n)=>(n=t!=null?m(f(t)):{},u(e||!t||!t.__esModule?a(n,"default",{value:t,enumerable:!0}):n,t)),l=t=>u(a({},"__esModule",{value:!0}),t);var i=p((X,c)=>{c.exports=_jsx_runtime});var D={};d(D,{default:()=>C});var r=g(i());function M(t={}){let{wrapper:e}=t.components||{};return e?(0,r.jsx)(e,Object.assign({},t,{children:(0,r.jsx)(n,{})})):n();function n(){return(0,r.jsx)(r.Fragment,{})}}var C=M;return l(D);})();\n' +
+  //     ';return Component;',
+  //   toc: [],
+  //   frontMatter: {
+  //     readingTime: { text: '1 min read', minutes: 0.14, time: 8400, words: 28 },
+  //     slug: 't1',
+  //     fileName: 't1.md',
+  //     date: null
+  //   }
+  // }
+  // console.log('post:', post)
   // @ts-ignore
   const authorList = post.frontMatter.authors || ['default']
   const authorPromise = authorList.map(async (author) => {
@@ -42,8 +98,23 @@ export const getStaticProps: GetStaticProps<{
     return authorResults.frontMatter
   })
   const authorDetails = await Promise.all(authorPromise)
-
-  // console.log('slug:', slug)
+  // [
+  //   {
+  //     readingTime: { text: '1 min read', minutes: 0.17, time: 10200, words: 34 },
+  //     slug: [ 'default' ],
+  //     fileName: 'default.md',
+  //     name: '狂奔滴小马',
+  //     avatar: '/static/images/avatar.png',
+  //     occupation: '前端工程师',
+  //     company: '分享 JavaScript 热门框架，记录前端工程师学习成长历程。',
+  //     email: 'maqi1520@163.com',
+  //     juejin: 'https://juejin.cn/user/2189882895384093',
+  //     zhihu: 'https://www.zhihu.com/people/xiao-ma-15-3',
+  //     github: 'https://github.com/maqi1520',
+  //     date: null
+  //   }
+  // ]
+  // console.log('authorDetails:', authorDetails)
   // console.log('getFileBySlug post:', post)
   // rss
   if (allPosts.length > 0) {

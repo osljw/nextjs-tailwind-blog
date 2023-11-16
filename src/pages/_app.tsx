@@ -4,6 +4,7 @@ import 'katex/dist/katex.css'
 
 import '@fontsource/inter/variable-full.css'
 
+import { useEffect } from 'react'
 import { ThemeProvider } from 'next-themes'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
@@ -21,11 +22,11 @@ export default function App({ Component, pageProps }: AppProps) {
     <ThemeProvider attribute="class" defaultTheme={siteMetadata.theme}>
       <Head>
         <meta content="width=device-width, initial-scale=1" name="viewport" />
-        <script
+        {/* <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9163539254569883"
           crossOrigin="anonymous"
-        ></script>
+        ></script> */}
       </Head>
       {isDevelopment && isSocket && <ClientReload />}
       <Analytics />

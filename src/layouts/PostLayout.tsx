@@ -71,7 +71,7 @@ export default function PostLayout(props: Props) {
             style={{ gridTemplateRows: 'auto 1fr' }}
           >
             <div className="">
-              <dl className="pt-6 pb-10 xl:border-b xl:border-gray-200 xl:pt-11 xl:dark:border-gray-700">
+              <dl className="pb-10 pt-6 xl:border-b xl:border-gray-200 xl:pt-11 xl:dark:border-gray-700">
                 <dt className="sr-only">Authors</dt>
                 <dd>
                   <ul className="flex justify-center space-x-8 sm:space-x-12 xl:block xl:space-x-0 xl:space-y-8">
@@ -106,10 +106,10 @@ export default function PostLayout(props: Props) {
                   <img alt={title} className="w-full rounded object-cover shadow-lg" src={src} />
                 </div>
               ) : null}
-              <div className="prose max-w-none break-words pt-10 pb-8 dark:prose-dark">
+              <div className="prose max-w-none break-words pb-8 pt-10 dark:prose-dark">
                 {children}
               </div>
-              <div className="border-t border-gray-200 pt-6 pb-6 text-sm text-gray-700 dark:border-gray-700 dark:text-gray-300">
+              {/* <div className="border-t border-gray-200 pt-6 pb-6 text-sm text-gray-700 dark:border-gray-700 dark:text-gray-300">
                 <div className="mb-3">
                   <Image
                     alt="runjs-cool"
@@ -121,7 +121,7 @@ export default function PostLayout(props: Props) {
 
                 <span>关注微信公众号，获取最新原创文章（首发）</span>
                 <Link href={editUrl(fileName)}>{'View on GitHub'}</Link>
-              </div>
+              </div> */}
               <Comments frontMatter={frontMatter} />
             </div>
             <footer>

@@ -16,7 +16,13 @@ https://github.com/timlrx/tailwind-nextjs-starter-blog
 ## Installation
 
 ```bash
+
 npm install
+```
+
+```bash
+# install tinymce
+npm run postinstall
 ```
 
 ## Development
