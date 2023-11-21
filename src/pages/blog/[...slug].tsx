@@ -1,7 +1,5 @@
 import fs from 'fs'
-import PageTitle from '@/components/PageTitle'
-import generateRss from '@/lib/generate-rss'
-import { MDXLayoutRenderer } from '@/components/MDXComponents'
+
 import {
   formatSlug,
   getAllFilesFrontMatter,
@@ -14,30 +12,40 @@ import { AuthorFrontMatter } from 'types/AuthorFrontMatter'
 import { PostFrontMatter } from 'types/PostFrontMatter'
 import { Toc } from 'types/Toc'
 import readingTime from 'reading-time'
+
+import PageTitle from '@/components/PageTitle'
+import generateRss from '@/lib/generate-rss'
+import { MDXLayoutRenderer } from '@/components/MDXComponents'
 import { getArticle, getArticleList, getArticleSlugList } from '@/lib/backend'
+import TinymceEditor from '@/editor/TinymceEditor'
 
 const DEFAULT_LAYOUT = 'PostLayout'
 const DEFAULT_DATA_FROM = 'backend' // file | backend
 
 async function getPostBySlug(slug) {
   const data = await getArticle(slug)
-  const source = data.body
-  console.log('getPostBySlug')
 
-  const { code, toc, frontmatter } = await getMDXSource(source)
+  console.log('getPostBySlug', data)
 
-  return {
-    mdxSource: code,
-    toc,
-    frontMatter: {
-      readingTime: readingTime(code),
-      slug: slug || null,
-      fileName: null,
-      ...frontmatter,
-      date: frontmatter.date ? new Date(frontmatter.date).toISOString() : null,
-      draft: false,
-    },
+  if (data.type === 'mdx') {
+    const source = data.body
+    const { code, toc, frontmatter } = await getMDXSource(source)
+
+    return {
+      mdxSource: code,
+      toc,
+      frontMatter: {
+        readingTime: readingTime(code),
+        slug: slug || null,
+        fileName: null,
+        ...frontmatter,
+        date: frontmatter.date ? new Date(frontmatter.date).toISOString() : null,
+        draft: false,
+      },
+    }
   }
+
+  return data
 }
 
 export async function getStaticPaths() {
@@ -79,6 +87,13 @@ export const getStaticProps: GetStaticProps<{
   const next: { slug: string; title: string } = allPosts[postIndex - 1] || null
   // const post = await getFileBySlug<PostFrontMatter>('blog', slug)
   post = await getPostBySlug(slug)
+  if (post.type) {
+    return {
+      props: {
+        post,
+      },
+    }
+  }
   // post: {
   //   mdxSource: 'var Component=(()=>{var m=Object.create;var a=Object.defineProperty;var x=Object.getOwnPropertyDescriptor;var _=Object.getOwnPropertyNames;var f=Object.getPrototypeOf,j=Object.prototype.hasOwnProperty;var p=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),d=(t,e)=>{for(var n in e)a(t,n,{get:e[n],enumerable:!0})},u=(t,e,n,s)=>{if(e&&typeof e=="object"||typeof e=="function")for(let o of _(e))!j.call(t,o)&&o!==n&&a(t,o,{get:()=>e[o],enumerable:!(s=x(e,o))||s.enumerable});return t};var g=(t,e,n)=>(n=t!=null?m(f(t)):{},u(e||!t||!t.__esModule?a(n,"default",{value:t,enumerable:!0}):n,t)),l=t=>u(a({},"__esModule",{value:!0}),t);var i=p((X,c)=>{c.exports=_jsx_runtime});var D={};d(D,{default:()=>C});var r=g(i());function M(t={}){let{wrapper:e}=t.components||{};return e?(0,r.jsx)(e,Object.assign({},t,{children:(0,r.jsx)(n,{})})):n();function n(){return(0,r.jsx)(r.Fragment,{})}}var C=M;return l(D);})();\n' +
   //     ';return Component;',
@@ -138,6 +153,14 @@ export default function Blog({
   prev,
   next,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
+  if (post.type) {
+    return (
+      <>
+        <TinymceEditor initialValue={post.body} readOnly={true} />
+      </>
+    )
+  }
+
   const { mdxSource, toc, frontMatter } = post
 
   return (

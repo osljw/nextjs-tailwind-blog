@@ -79,6 +79,7 @@ export default function Blog({
   return (
     <>
       <PageSEO title={`全部文章 - ${siteMetadata.author}`} description={siteMetadata.description} />
+      {/* <button class="btn btn-primary">Button</button> */}
       <ListLayout
         posts={posts}
         initialDisplayPosts={initialDisplayPosts}

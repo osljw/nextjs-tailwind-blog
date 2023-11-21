@@ -1,7 +1,8 @@
 import { useRef } from 'react'
 import { Editor } from '@tinymce/tinymce-react'
 
-export default function TinymceEditor() {
+export default function TinymceEditor({ initialValue, setContent, readOnly }) {
+  console.log('TinymceEditor content:', initialValue)
   // tinymce
   const editorRef = useRef(null)
   const log = () => {
@@ -11,25 +12,49 @@ export default function TinymceEditor() {
   }
 
   // 处理保存内容到后端的函数
-  const handleSave = async () => {
-    try {
-      // 发送 POST 请求到后端保存内容的 API 端点
-      const response = await fetch('/api/save-content', {
-        method: 'POST',
-        body: JSON.stringify({ content }), // 将编辑器内容作为请求体发送
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+  const handleSave = async () => {}
 
-      if (response.ok) {
-        console.log('内容保存成功！')
-      } else {
-        console.error('内容保存失败！')
-      }
-    } catch (error) {
-      console.error('发生错误：', error)
-    }
+  if (readOnly) {
+    return (
+      <>
+        <Editor
+          // tinymceScriptSrc={process.env.PUBLIC_URL + '/tinymce/tinymce.min.js'}
+          tinymceScriptSrc={'/tinymce/tinymce.min.js'}
+          onInit={(evt, editor) => (editorRef.current = editor)}
+          initialValue={initialValue}
+          onChange={() => {
+            if (editorRef.current) setContent(editorRef.current.getContent())
+          }}
+          init={{
+            // height: 500,
+
+            plugins: [
+              'advlist',
+              'autolink',
+              'lists',
+              'link',
+              'image',
+              'charmap',
+              'anchor',
+              'searchreplace',
+              'visualblocks',
+              'code',
+              'fullscreen',
+              'insertdatetime',
+              'media',
+              'table',
+              'preview',
+              'help',
+              'wordcount',
+            ],
+            menubar: false,
+            toolbar: false,
+            statusbar: false,
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+          }}
+        />
+      </>
+    )
   }
 
   return (
@@ -38,10 +63,13 @@ export default function TinymceEditor() {
         // tinymceScriptSrc={process.env.PUBLIC_URL + '/tinymce/tinymce.min.js'}
         tinymceScriptSrc={'/tinymce/tinymce.min.js'}
         onInit={(evt, editor) => (editorRef.current = editor)}
-        initialValue="<p>This is the initial content of the editor.</p>"
+        initialValue={initialValue}
+        onChange={() => {
+          if (editorRef.current) setContent(editorRef.current.getContent())
+        }}
         init={{
-          height: 500,
-          menubar: false,
+          // height: 500,
+          // menubar: false,
           plugins: [
             'advlist',
             'autolink',
@@ -69,7 +97,7 @@ export default function TinymceEditor() {
           content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
         }}
       />
-      <div className="container mx-auto">
+      {/* <div className="container mx-auto">
         <button
           className="m-2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
           onClick={log}
@@ -82,7 +110,7 @@ export default function TinymceEditor() {
         >
           Save content
         </button>
-      </div>
+      </div> */}
     </>
   )
 }

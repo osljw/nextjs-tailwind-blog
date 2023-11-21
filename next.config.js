@@ -71,21 +71,21 @@ module.exports = withBundleAnalyzer({
   },
   async redirects() {
     return [
-      {
-        source: '/blog/1',
-        destination: '/blog/Refactoring-my-blog-using-NextJS-and-TailwindCSS',
-        permanent: true,
-      },
-      {
-        source: '/blog/4',
-        destination: '/blog/Implement-a-vscode-translation-extension',
-        permanent: true,
-      },
-      {
-        source: '/blog/6',
-        destination: '/blog/how-to-deploy-a-dynamic-website-for-free',
-        permanent: true,
-      },
+      // {
+      //   source: '/blog/1',
+      //   destination: '/blog/Refactoring-my-blog-using-NextJS-and-TailwindCSS',
+      //   permanent: true,
+      // },
+      // {
+      //   source: '/blog/4',
+      //   destination: '/blog/Implement-a-vscode-translation-extension',
+      //   permanent: true,
+      // },
+      // {
+      //   source: '/blog/6',
+      //   destination: '/blog/how-to-deploy-a-dynamic-website-for-free',
+      //   permanent: true,
+      // },
     ]
   },
   typescript: {

@@ -1,0 +1,279 @@
+'use client'
+
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { Form } from 'antd'
+import { Button, Input, Breadcrumb } from 'antd'
+import { message } from 'antd'
+
+import TinymceEditor from '@/editor/TinymceEditor'
+
+export async function getArticle(id) {
+  const res = await fetch(`http://127.0.0.1:8000/api/article/${id}`, {
+    // method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+  })
+
+  // console.log("res: ", res)
+
+  // slug, date, title, summary, tags, images
+  return await res.json()
+}
+
+export async function putArticle(data) {
+  console.log('put data:', data)
+  const res = await fetch(`http://127.0.0.1:8000/api/article/${data.id}`, {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+
+  // console.log("res: ", res)
+
+  return await res.json()
+}
+
+export async function deleteArticle(id) {
+  console.log('delete data:', id)
+  const res = await fetch(`http://127.0.0.1:8000/api/article/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    // body: JSON.stringify(data),
+  })
+
+  // console.log("res: ", res)
+
+  return await res.json()
+}
+
+const layout = {
+  labelCol: {
+    span: 1,
+  },
+  // wrapperCol: {
+  //   span: 16,
+  // },
+}
+
+/* eslint-disable no-template-curly-in-string */
+const validateMessages = {
+  required: '${label} is required!',
+  types: {
+    email: '${label} is not a valid email!',
+    number: '${label} is not a valid number!',
+  },
+  number: {
+    range: '${label} must be between ${min} and ${max}',
+  },
+}
+/* eslint-enable no-template-curly-in-string */
+
+export default function Page({ params }) {
+  const router = useRouter()
+  const [post, setPost] = useState({})
+  const [content, setContent] = useState('')
+  const [form] = Form.useForm()
+  const [messageApi, contextHolder] = message.useMessage()
+
+  const slug = params.slug.join('')
+  const createMode = slug === 'create'
+
+  useEffect(() => {
+    if (!createMode) {
+      getArticle(slug).then((value) => {
+        setPost(value)
+        setContent(value.body)
+        form.setFieldsValue({
+          title: value.title,
+        })
+      })
+    }
+  }, [])
+
+  const updateArticle = async (values) => {
+    try {
+      const response = await putArticle({
+        id: slug,
+        title: values.title,
+        body: content,
+        //   is_show: false,
+        // tags: ["tag1", "tag2"],
+        // auth: 1,
+        tags: ['tag1', 'tag2'],
+        auth: {
+          username: 'admin',
+        },
+      })
+      console.log('save response:', response)
+
+      if (response.id) {
+        console.log('内容保存成功！')
+        messageApi.open({
+          type: 'success',
+          content: '文章保存成功！',
+        })
+      } else {
+        console.error('内容保存失败！')
+        messageApi.open({
+          type: 'error',
+          content: '文章保存失败！',
+        })
+      }
+    } catch (error) {
+      console.error('发生错误：', error)
+    }
+  }
+
+  const createArticle = async (values) => {
+    console.log('form values:', values)
+
+    try {
+      const response = await createArticle({
+        title: values.title,
+        body: content,
+        //   is_show: false,
+        // tags: ["tag1", "tag2"],
+        // auth: 1,
+        tags: ['tag1', 'tag2'],
+        auth: {
+          // id: 1,
+          username: 'admin',
+        },
+      })
+      console.log('save response:', response)
+
+      if (response.id) {
+        console.log('内容保存成功！')
+      } else {
+        console.error('内容保存失败！')
+      }
+    } catch (error) {
+      console.error('发生错误：', error)
+    }
+  }
+
+  const onFinish = async (values) => {
+    console.log('form values:', values)
+    if (createMode) {
+      createArticle(values)
+    } else {
+      updateArticle(values)
+    }
+  }
+
+  const onDelete = () => {
+    deleteArticle(slug).then((res) => {
+      console.log('delete res:', res)
+      router.push('/admin/article')
+    })
+  }
+
+  console.log('article slug:', params.slug, ' post:', post)
+  console.log('content:', content)
+  return (
+    <>
+      <Breadcrumb
+        items={[
+          {
+            title: 'Home',
+          },
+          {
+            title: <Link href="/admin/article">Article</Link>,
+          },
+          //   {
+          //     title: <a href="">Application List</a>,
+          //   },
+          {
+            title: params.slug,
+          },
+        ]}
+      />
+      {/* <h2> article slug: {params.slug} </h2> */}
+      {/* <TinymceEditor initialValue={post && post.body} readOnly={true} /> */}
+      {/* <Button type='primary' onClick={updateArticle}> 更新 </Button>
+          <TinymceEditor initialValue={post && post.body} setContent={setContent} /> */}
+
+      <Form
+        form={form}
+        {...layout}
+        name="nest-messages"
+        onFinish={onFinish}
+        // style={{
+        //     maxWidth: 600,
+        // }}
+        validateMessages={validateMessages}
+      >
+        <Form.Item
+          name={['title']}
+          label="标题"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input value={post.title} />
+        </Form.Item>
+        {/* <Form.Item
+                    name={['user', 'email']}
+                    label="Email"
+                    rules={[
+                        {
+                            type: 'email',
+                        },
+                    ]}
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
+                    name={['user', 'age']}
+                    label="Age"
+                    rules={[
+                        {
+                            type: 'number',
+                            min: 0,
+                            max: 99,
+                        },
+                    ]}
+                >
+                    <InputNumber />
+                </Form.Item> */}
+        <Form.Item label="文章内容">
+          {createMode ? (
+            <TinymceEditor initialValue="" setContent={setContent} />
+          ) : (
+            <TinymceEditor initialValue={post && post.body} setContent={setContent} />
+          )}
+        </Form.Item>
+        {/* <Form.Item name={['user', 'introduction']} label="Introduction">
+                    <Input.TextArea />
+                </Form.Item> */}
+        <Form.Item
+          wrapperCol={{
+            // ...layout.wrapperCol,
+            offset: 2,
+          }}
+        >
+          {contextHolder}
+          {!createMode && (
+            <Button type="primary" danger onClick={onDelete}>
+              删除
+            </Button>
+          )}
+          <Button type="primary" htmlType="submit">
+            保存
+          </Button>
+        </Form.Item>
+      </Form>
+    </>
+  )
+}

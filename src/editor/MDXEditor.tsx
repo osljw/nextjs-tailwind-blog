@@ -330,8 +330,8 @@ export default function Playground() {
             <div className="playground-draw">
               {/* {toJsxRuntime(starryNight.highlight(value, scope), runtime)} */}
               {/* Trailing whitespace in a `textarea` is shown, but not in a `div`
-          with `white-space: pre-wrap`.
-          Add a `br` to make the last newline explicit. */}
+        with `white-space: pre-wrap`.
+        Add a `br` to make the last newline explicit. */}
               {/\n[ \t]*$/.test(value) ? <br /> : undefined}
             </div>
             <textarea
@@ -346,216 +346,216 @@ export default function Playground() {
           </div>
         </div>
         {/* <div className="playground-controls">
-          <fieldset>
-            <legend>Show</legend>
-            <label>
-              <select
-                name="show"
-                onChange={function (event) {
-                  setShow(event.target.value)
-                }}
-              >
-                <option value="result">evaluated result</option>
-                <option value="code">compiled code</option>
-                <option value="mdast">mdast (markdown)</option>
-                <option value="hast">hast (html)</option>
-                <option value="esast">esast (javascript)</option>
-              </select>{' '}
-            </label>
-          </fieldset>
-          <fieldset>
-            <legend>Plugin</legend>
-            <label>
-              <input
-                type="checkbox"
-                name="directive"
-                checked={directive}
-                onChange={function () {
-                  setDirective(!directive)
-                }}
-              />{' '}
-              use{' '}
-              <a href="https://github.com/remarkjs/remark-directive">
-                <code>remark-directive</code>
-              </a>
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                name="frontmatter"
-                checked={frontmatter}
-                onChange={function () {
-                  setFrontmatter(!frontmatter)
-                }}
-              />{' '}
-              use{' '}
-              <a href="https://github.com/remarkjs/remark-frontmatter">
-                <code>remark-frontmatter</code>
-              </a>
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                name="gfm"
-                checked={gfm}
-                onChange={function () {
-                  setGfm(!gfm)
-                }}
-              />{' '}
-              use{' '}
-              <a href="https://github.com/remarkjs/remark-gfm">
-                <code>remark-gfm</code>
-              </a>
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                name="math"
-                checked={math}
-                onChange={function () {
-                  setMath(!math)
-                }}
-              />{' '}
-              use{' '}
-              <a href="https://github.com/remarkjs/remark-math">
-                <code>remark-math</code>
-              </a>
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                name="raw"
-                checked={raw}
-                onChange={function () {
-                  setRaw(!raw)
-                }}
-              />{' '}
-              use{' '}
-              <a href="https://github.com/rehypejs/rehype-raw">
-                <code>rehype-raw</code>
-              </a>
-            </label>
-          </fieldset>
-          <fieldset>
-            <legend>Input format</legend>
-            <label>
-              <input
-                type="radio"
-                name="language"
-                checked={!formatMarkdown}
-                onChange={function () {
-                  setFormatMarkdown(false)
-                }}
-              />{' '}
-              MDX (<code>format: &apos;mdx&apos;</code>)
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="language"
-                checked={formatMarkdown}
-                onChange={function () {
-                  setFormatMarkdown(true)
-                }}
-              />{' '}
-              markdown (<code>format: &apos;markdown&apos;</code>)
-            </label>
-          </fieldset>
+        <fieldset>
+          <legend>Show</legend>
+          <label>
+            <select
+              name="show"
+              onChange={function (event) {
+                setShow(event.target.value)
+              }}
+            >
+              <option value="result">evaluated result</option>
+              <option value="code">compiled code</option>
+              <option value="mdast">mdast (markdown)</option>
+              <option value="hast">hast (html)</option>
+              <option value="esast">esast (javascript)</option>
+            </select>{' '}
+          </label>
+        </fieldset>
+        <fieldset>
+          <legend>Plugin</legend>
+          <label>
+            <input
+              type="checkbox"
+              name="directive"
+              checked={directive}
+              onChange={function () {
+                setDirective(!directive)
+              }}
+            />{' '}
+            use{' '}
+            <a href="https://github.com/remarkjs/remark-directive">
+              <code>remark-directive</code>
+            </a>
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              name="frontmatter"
+              checked={frontmatter}
+              onChange={function () {
+                setFrontmatter(!frontmatter)
+              }}
+            />{' '}
+            use{' '}
+            <a href="https://github.com/remarkjs/remark-frontmatter">
+              <code>remark-frontmatter</code>
+            </a>
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              name="gfm"
+              checked={gfm}
+              onChange={function () {
+                setGfm(!gfm)
+              }}
+            />{' '}
+            use{' '}
+            <a href="https://github.com/remarkjs/remark-gfm">
+              <code>remark-gfm</code>
+            </a>
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              name="math"
+              checked={math}
+              onChange={function () {
+                setMath(!math)
+              }}
+            />{' '}
+            use{' '}
+            <a href="https://github.com/remarkjs/remark-math">
+              <code>remark-math</code>
+            </a>
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              name="raw"
+              checked={raw}
+              onChange={function () {
+                setRaw(!raw)
+              }}
+            />{' '}
+            use{' '}
+            <a href="https://github.com/rehypejs/rehype-raw">
+              <code>rehype-raw</code>
+            </a>
+          </label>
+        </fieldset>
+        <fieldset>
+          <legend>Input format</legend>
+          <label>
+            <input
+              type="radio"
+              name="language"
+              checked={!formatMarkdown}
+              onChange={function () {
+                setFormatMarkdown(false)
+              }}
+            />{' '}
+            MDX (<code>format: &apos;mdx&apos;</code>)
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="language"
+              checked={formatMarkdown}
+              onChange={function () {
+                setFormatMarkdown(true)
+              }}
+            />{' '}
+            markdown (<code>format: &apos;markdown&apos;</code>)
+          </label>
+        </fieldset>
 
-          <fieldset disabled={show === 'result'}>
-            <legend>Output format</legend>
-            <label>
-              <input
-                type="radio"
-                name="output-format"
-                checked={outputFormatFunctionBody}
-                onChange={function () {
-                  setOutputFormatFunctionBody(true)
-                }}
-              />{' '}
-              function body (
-              <code>outputFormat: &apos;function-body&apos;</code>)
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="output-format"
-                checked={!outputFormatFunctionBody}
-                onChange={function () {
-                  setOutputFormatFunctionBody(false)
-                }}
-              />{' '}
-              program (<code>outputFormat: &apos;program&apos;</code>)
-            </label>
-          </fieldset>
+        <fieldset disabled={show === 'result'}>
+          <legend>Output format</legend>
+          <label>
+            <input
+              type="radio"
+              name="output-format"
+              checked={outputFormatFunctionBody}
+              onChange={function () {
+                setOutputFormatFunctionBody(true)
+              }}
+            />{' '}
+            function body (
+            <code>outputFormat: &apos;function-body&apos;</code>)
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="output-format"
+              checked={!outputFormatFunctionBody}
+              onChange={function () {
+                setOutputFormatFunctionBody(false)
+              }}
+            />{' '}
+            program (<code>outputFormat: &apos;program&apos;</code>)
+          </label>
+        </fieldset>
 
-          <fieldset disabled={show === 'result'}>
-            <legend>Development</legend>
-            <label>
-              <input
-                type="radio"
-                name="development"
-                checked={development}
-                onChange={function () {
-                  setDevelopment(true)
-                }}
-              />{' '}
-              generate for development (<code>development: true</code>)
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="development"
-                checked={!development}
-                onChange={function () {
-                  setDevelopment(false)
-                }}
-              />{' '}
-              generate for production (<code>development: false</code>)
-            </label>
-          </fieldset>
+        <fieldset disabled={show === 'result'}>
+          <legend>Development</legend>
+          <label>
+            <input
+              type="radio"
+              name="development"
+              checked={development}
+              onChange={function () {
+                setDevelopment(true)
+              }}
+            />{' '}
+            generate for development (<code>development: true</code>)
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="development"
+              checked={!development}
+              onChange={function () {
+                setDevelopment(false)
+              }}
+            />{' '}
+            generate for production (<code>development: false</code>)
+          </label>
+        </fieldset>
 
-          <fieldset disabled={show === 'result'}>
-            <legend>JSX</legend>
-            <label>
-              <input
-                type="radio"
-                name="jsx"
-                checked={jsx}
-                onChange={function () {
-                  setJsx(true)
-                }}
-              />{' '}
-              keep JSX (<code>jsx: true</code>)
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="jsx"
-                checked={!jsx}
-                onChange={function () {
-                  setJsx(false)
-                }}
-              />{' '}
-              compile JSX away (<code>jsx: false</code>)
-            </label>
-          </fieldset>
+        <fieldset disabled={show === 'result'}>
+          <legend>JSX</legend>
+          <label>
+            <input
+              type="radio"
+              name="jsx"
+              checked={jsx}
+              onChange={function () {
+                setJsx(true)
+              }}
+            />{' '}
+            keep JSX (<code>jsx: true</code>)
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="jsx"
+              checked={!jsx}
+              onChange={function () {
+                setJsx(false)
+              }}
+            />{' '}
+            compile JSX away (<code>jsx: false</code>)
+          </label>
+        </fieldset>
 
-          <fieldset disabled={show === 'result' || show === 'code'}>
-            <legend>Tree</legend>
-            <label>
-              <input
-                type="checkbox"
-                name="positions"
-                checked={positions}
-                onChange={function () {
-                  setPositions(!positions)
-                }}
-              />{' '}
-              show <code>position</code> in tree
-            </label>
-          </fieldset>
-        </div> */}
+        <fieldset disabled={show === 'result' || show === 'code'}>
+          <legend>Tree</legend>
+          <label>
+            <input
+              type="checkbox"
+              name="positions"
+              checked={positions}
+              onChange={function () {
+                setPositions(!positions)
+              }}
+            />{' '}
+            show <code>position</code> in tree
+          </label>
+        </fieldset>
+      </div> */}
       </form>
       {display}
     </>
