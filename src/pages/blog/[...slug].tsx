@@ -25,7 +25,7 @@ const DEFAULT_DATA_FROM = 'backend' // file | backend
 async function getPostBySlug(slug) {
   const data = await getArticle(slug)
 
-  console.log('getPostBySlug', data)
+  // console.log('getPostBySlug', data)
 
   if (data.type === 'mdx') {
     const source = data.body

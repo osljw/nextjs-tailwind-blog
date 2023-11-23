@@ -9,51 +9,7 @@ import { message } from 'antd'
 
 import TinymceEditor from '@/editor/TinymceEditor'
 
-export async function getArticle(id) {
-  const res = await fetch(`http://127.0.0.1:8000/api/article/${id}`, {
-    // method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-  })
-
-  // console.log("res: ", res)
-
-  // slug, date, title, summary, tags, images
-  return await res.json()
-}
-
-export async function putArticle(data) {
-  console.log('put data:', data)
-  const res = await fetch(`http://127.0.0.1:8000/api/article/${data.id}`, {
-    method: 'PUT',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  })
-
-  // console.log("res: ", res)
-
-  return await res.json()
-}
-
-export async function deleteArticle(id) {
-  console.log('delete data:', id)
-  const res = await fetch(`http://127.0.0.1:8000/api/article/${id}`, {
-    method: 'DELETE',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    // body: JSON.stringify(data),
-  })
-
-  // console.log("res: ", res)
-
-  return await res.json()
-}
+import { getArticle, putArticle, deleteArticle } from '@/lib/api'
 
 const layout = {
   labelCol: {
@@ -97,7 +53,7 @@ export default function Page({ params }) {
         })
       })
     }
-  }, [])
+  }, [createMode, slug, form])
 
   const updateArticle = async (values) => {
     try {
@@ -178,7 +134,7 @@ export default function Page({ params }) {
   }
 
   console.log('article slug:', params.slug, ' post:', post)
-  console.log('content:', content)
+  //   console.log('content:', content)
   return (
     <>
       <Breadcrumb

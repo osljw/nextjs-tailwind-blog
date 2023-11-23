@@ -5,22 +5,8 @@ import { useRouter } from 'next/navigation'
 
 import { Table, Tag, Button, Breadcrumb } from 'antd'
 import { useEffect, useState } from 'react'
-// import { getArticleList } from '@/lib/backend'
 
-export async function getArticleList() {
-  const res = await fetch(`http://127.0.0.1:8000/api/article`, {
-    // method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-  })
-
-  // slug, date, title, summary, tags, images
-  // const posts = transformData(await res.json())
-  const posts = await res.json()
-
-  return posts
-}
+import { getArticleList } from '@/lib/api'
 
 const columns = [
   // {

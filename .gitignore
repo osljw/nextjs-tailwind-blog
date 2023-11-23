@@ -19,7 +19,6 @@ public/sitemap.xml
 *.xml
 # rss feed
 /public/feed.xml
-/public/tinymce/
 
 # misc
 .DS_Store

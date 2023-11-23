@@ -1,46 +1,4 @@
-/* @jsxRuntime automatic @jsxImportSource react */
-
-/**
- * @typedef {import('@wooorm/starry-night').Grammar} Grammar
- * @typedef {import('estree').Node} EstreeNode
- * @typedef {import('estree').Program} Program
- * @typedef {import('hast').Nodes} HastNodes
- * @typedef {import('hast').Root} HastRoot
- * @typedef {import('mdast').Nodes} MdastNodes
- * @typedef {import('mdast').Root} MdastRoot
- * @typedef {import('mdast-util-mdx-jsx').MdxJsxAttribute} MdxJsxAttribute
- * @typedef {import('mdast-util-mdx-jsx').MdxJsxAttributeValueExpression} MdxJsxAttributeValueExpression
- * @typedef {import('mdast-util-mdx-jsx').MdxJsxExpressionAttribute} MdxJsxExpressionAttribute
- * @typedef {import('mdx/types.js').MDXModule} MDXModule
- * @typedef {import('react-error-boundary').FallbackProps} FallbackProps
- * @typedef {import('unified').PluggableList} PluggableList
- * @typedef {import('unist').Node} UnistNode
- */
-
-/**
- * @typedef DisplayProps
- *   Props.
- * @property {Error} error
- *   Error.
- *
- * @typedef EvalNok
- *   Not OK.
- * @property {false} ok
- *   Whether OK.
- * @property {Error} value
- *   Error.
- *
- * @typedef EvalOk
- *   OK.
- * @property {true} ok
- *   Whether OK.
- * @property {JSX.Element} value
- *   Result.
- *
- * @typedef {EvalNok | EvalOk} EvalResult
- *   Result.
- */
-
+import { useRef } from 'react'
 import { compile, nodeTypes, run } from '@mdx-js/mdx'
 import { createStarryNight } from '@wooorm/starry-night'
 import sourceCss from '@wooorm/starry-night/source.css'
@@ -69,30 +27,6 @@ import { VFile } from 'vfile'
 
 const runtime = { Fragment, jsx, jsxs }
 
-const sample = `# Hello, world!
-
-Below is an example of markdown in JSX.
-
-<div style={{backgroundColor: 'violet', padding: '1rem'}}>
-  Try and change the background color to \`tomato\`.
-</div>`
-
-/** @type {ReadonlyArray<Grammar>} */
-const grammars = [
-  sourceCss,
-  sourceJs,
-  // @ts-expect-error: TS is wrong: this is not a JSON file.
-  sourceJson,
-  sourceMdx,
-  sourceTs,
-  sourceTsx,
-  textHtmlBasic,
-  textMd,
-]
-
-/** @type {Awaited<ReturnType<typeof createStarryNight>>} */
-let starryNight
-
 // const editor = document.querySelector('#js-editor')
 
 // if (window.location.pathname === '/playground/' && editor) {
@@ -102,39 +36,8 @@ let starryNight
 //   init(root)
 // }
 
-/**
- * @param {Element} main
- *   DOM element.
- * @returns {undefined}
- *   Nothing.
- */
-function init(main) {
-  //const root = ReactDom.createRoot(main)
-
-  createStarryNight(grammars).then(
-    /**
-     * @returns {undefined}
-     *   Nothing.
-     */
-    function (x) {
-      starryNight = x
-
-      const missing = starryNight.missingScopes()
-      if (missing.length > 0) {
-        throw new Error('Unexpected missing required scopes: `' + missing + '`')
-      }
-
-      //root.render(<Playground />)
-    }
-  )
-}
-
-export default function Playground() {
+export default function MDXEditor({ initialValue }) {
   const [directive, setDirective] = useState(false)
-  const [evalResult, setEvalResult] = useState(
-    // Cast to more easily use actual value.
-    /** @type {unknown} */ undefined
-  )
   const [development, setDevelopment] = useState(false)
   const [frontmatter, setFrontmatter] = useState(false)
   const [gfm, setGfm] = useState(false)
@@ -145,37 +48,27 @@ export default function Playground() {
   const [positions, setPositions] = useState(false)
   const [raw, setRaw] = useState(false)
   const [show, setShow] = useState('result')
-  const [value, setValue] = useState(sample)
+  const [value, setValue] = useState(initialValue)
+  const [evalResult, setEvalResult] = useState(
+    // Cast to more easily use actual value.
+    /** @type {unknown} */ undefined
+  )
+
+  const editorRef = useRef(null)
 
   useEffect(() => {
-    const editor = document.querySelector('#js-editor')
-
-    // if (window.location.pathname === '/playground/' && editor) {
-    if (editor) {
-      const root = document.createElement('div')
-      root.classList.add('playground')
-      editor.after(root)
-      init(root)
-    }
+    // const editor = document.querySelector('#js-editor')
+    // // if (window.location.pathname === '/playground/' && editor) {
+    // if (editor) {
+    //   const root = document.createElement('div')
+    //   root.classList.add('playground')
+    //   editor.after(root)
+    //   init(root)
+    // }
   }, [])
 
   useEffect(
     function () {
-      go().then(
-        function (ok) {
-          setEvalResult({ ok: true, value: ok })
-        },
-        /**
-         * @param {Error} error
-         *   Error.
-         * @returns {undefined}
-         *   Nothing.
-         */
-        function (error) {
-          setEvalResult({ ok: false, value: error })
-        }
-      )
-
       async function go() {
         /** @type {PluggableList} */
         const recmaPlugins = []
@@ -224,26 +117,6 @@ export default function Playground() {
           )
         }
 
-        if (ast) {
-          return (
-            <pre>
-              <code>
-                {toJsxRuntime(
-                  starryNight.highlight(JSON.stringify(ast, undefined, 2), 'source.json'),
-                  runtime
-                )}
-              </code>
-            </pre>
-          )
-        }
-
-        // `show === 'code'`
-        return (
-          <pre>
-            <code>{toJsxRuntime(starryNight.highlight(String(file), 'source.js'), runtime)}</code>
-          </pre>
-        )
-
         function captureMdast() {
           /**
            * @param {MdastRoot} tree
@@ -286,7 +159,23 @@ export default function Playground() {
           }
         }
       }
+
+      go().then(
+        function (ok) {
+          setEvalResult({ ok: true, value: ok })
+        },
+        /**
+         * @param {Error} error
+         *   Error.
+         * @returns {undefined}
+         *   Nothing.
+         */
+        function (error) {
+          setEvalResult({ ok: false, value: error })
+        }
+      )
     },
+
     [
       development,
       directive,
@@ -324,240 +213,23 @@ export default function Playground() {
 
   return (
     <>
-      <form>
-        <div className="playground-area">
-          <div className="playground-inner">
-            <div className="playground-draw">
-              {/* {toJsxRuntime(starryNight.highlight(value, scope), runtime)} */}
-              {/* Trailing whitespace in a `textarea` is shown, but not in a `div`
-        with `white-space: pre-wrap`.
-        Add a `br` to make the last newline explicit. */}
-              {/\n[ \t]*$/.test(value) ? <br /> : undefined}
-            </div>
-            <textarea
-              spellCheck="false"
-              className="playground-write"
-              value={value}
-              rows={value.split('\n').length + 1}
-              onChange={function (event) {
-                setValue(event.target.value)
-              }}
-            />
-          </div>
-        </div>
-        {/* <div className="playground-controls">
-        <fieldset>
-          <legend>Show</legend>
-          <label>
-            <select
-              name="show"
-              onChange={function (event) {
-                setShow(event.target.value)
-              }}
-            >
-              <option value="result">evaluated result</option>
-              <option value="code">compiled code</option>
-              <option value="mdast">mdast (markdown)</option>
-              <option value="hast">hast (html)</option>
-              <option value="esast">esast (javascript)</option>
-            </select>{' '}
-          </label>
-        </fieldset>
-        <fieldset>
-          <legend>Plugin</legend>
-          <label>
-            <input
-              type="checkbox"
-              name="directive"
-              checked={directive}
-              onChange={function () {
-                setDirective(!directive)
-              }}
-            />{' '}
-            use{' '}
-            <a href="https://github.com/remarkjs/remark-directive">
-              <code>remark-directive</code>
-            </a>
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              name="frontmatter"
-              checked={frontmatter}
-              onChange={function () {
-                setFrontmatter(!frontmatter)
-              }}
-            />{' '}
-            use{' '}
-            <a href="https://github.com/remarkjs/remark-frontmatter">
-              <code>remark-frontmatter</code>
-            </a>
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              name="gfm"
-              checked={gfm}
-              onChange={function () {
-                setGfm(!gfm)
-              }}
-            />{' '}
-            use{' '}
-            <a href="https://github.com/remarkjs/remark-gfm">
-              <code>remark-gfm</code>
-            </a>
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              name="math"
-              checked={math}
-              onChange={function () {
-                setMath(!math)
-              }}
-            />{' '}
-            use{' '}
-            <a href="https://github.com/remarkjs/remark-math">
-              <code>remark-math</code>
-            </a>
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              name="raw"
-              checked={raw}
-              onChange={function () {
-                setRaw(!raw)
-              }}
-            />{' '}
-            use{' '}
-            <a href="https://github.com/rehypejs/rehype-raw">
-              <code>rehype-raw</code>
-            </a>
-          </label>
-        </fieldset>
-        <fieldset>
-          <legend>Input format</legend>
-          <label>
-            <input
-              type="radio"
-              name="language"
-              checked={!formatMarkdown}
-              onChange={function () {
-                setFormatMarkdown(false)
-              }}
-            />{' '}
-            MDX (<code>format: &apos;mdx&apos;</code>)
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="language"
-              checked={formatMarkdown}
-              onChange={function () {
-                setFormatMarkdown(true)
-              }}
-            />{' '}
-            markdown (<code>format: &apos;markdown&apos;</code>)
-          </label>
-        </fieldset>
+      {/* <textarea
+        spellCheck="false"
+        className="playground-write"
+        value={value}
+        rows={value.split('\n').length + 1}
+        onChange={function (event) {
+          setValue(event.target.value)
+        }}
+      /> */}
 
-        <fieldset disabled={show === 'result'}>
-          <legend>Output format</legend>
-          <label>
-            <input
-              type="radio"
-              name="output-format"
-              checked={outputFormatFunctionBody}
-              onChange={function () {
-                setOutputFormatFunctionBody(true)
-              }}
-            />{' '}
-            function body (
-            <code>outputFormat: &apos;function-body&apos;</code>)
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="output-format"
-              checked={!outputFormatFunctionBody}
-              onChange={function () {
-                setOutputFormatFunctionBody(false)
-              }}
-            />{' '}
-            program (<code>outputFormat: &apos;program&apos;</code>)
-          </label>
-        </fieldset>
-
-        <fieldset disabled={show === 'result'}>
-          <legend>Development</legend>
-          <label>
-            <input
-              type="radio"
-              name="development"
-              checked={development}
-              onChange={function () {
-                setDevelopment(true)
-              }}
-            />{' '}
-            generate for development (<code>development: true</code>)
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="development"
-              checked={!development}
-              onChange={function () {
-                setDevelopment(false)
-              }}
-            />{' '}
-            generate for production (<code>development: false</code>)
-          </label>
-        </fieldset>
-
-        <fieldset disabled={show === 'result'}>
-          <legend>JSX</legend>
-          <label>
-            <input
-              type="radio"
-              name="jsx"
-              checked={jsx}
-              onChange={function () {
-                setJsx(true)
-              }}
-            />{' '}
-            keep JSX (<code>jsx: true</code>)
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="jsx"
-              checked={!jsx}
-              onChange={function () {
-                setJsx(false)
-              }}
-            />{' '}
-            compile JSX away (<code>jsx: false</code>)
-          </label>
-        </fieldset>
-
-        <fieldset disabled={show === 'result' || show === 'code'}>
-          <legend>Tree</legend>
-          <label>
-            <input
-              type="checkbox"
-              name="positions"
-              checked={positions}
-              onChange={function () {
-                setPositions(!positions)
-              }}
-            />{' '}
-            show <code>position</code> in tree
-          </label>
-        </fieldset>
-      </div> */}
-      </form>
       {display}
+      {/* {compiledResult.ok ? compiledResult.value : (
+        <div>
+          <p>Could not compile code:</p>
+          <DisplayError error={compiledResult.value} />
+        </div>
+      )} */}
     </>
   )
 }
