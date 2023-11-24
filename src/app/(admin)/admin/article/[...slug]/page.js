@@ -9,7 +9,7 @@ import { message } from 'antd'
 
 import TinymceEditor from '@/editor/TinymceEditor'
 
-import { getArticle, putArticle, deleteArticle } from '@/lib/api'
+import { getArticle, postArticle, putArticle, deleteArticle } from '@/lib/api'
 
 const layout = {
   labelCol: {
@@ -38,6 +38,7 @@ export default function Page({ params }) {
   const [post, setPost] = useState({})
   const [content, setContent] = useState('')
   const [form] = Form.useForm()
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [messageApi, contextHolder] = message.useMessage()
 
   const slug = params.slug.join('')
@@ -56,6 +57,13 @@ export default function Page({ params }) {
   }, [createMode, slug, form])
 
   const updateArticle = async (values) => {
+    if (isSubmitting) {
+      // 请求正在进行中，不执行重复操作
+      return
+    }
+
+    setIsSubmitting(true)
+
     try {
       const response = await putArticle({
         id: slug,
@@ -69,31 +77,40 @@ export default function Page({ params }) {
           username: 'admin',
         },
       })
-      console.log('save response:', response)
+      console.log('putArticle response:', response)
 
       if (response.id) {
-        console.log('内容保存成功！')
+        console.log('文章更新成功！')
         messageApi.open({
           type: 'success',
-          content: '文章保存成功！',
+          content: '文章更新成功！',
         })
       } else {
-        console.error('内容保存失败！')
+        console.error('文章更新失败！')
         messageApi.open({
           type: 'error',
-          content: '文章保存失败！',
+          content: '文章更新失败！',
         })
       }
     } catch (error) {
-      console.error('发生错误：', error)
+      console.error('文章更新发生错误：', error)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
   const createArticle = async (values) => {
-    console.log('form values:', values)
+    console.log('createArticle form values:', values)
+
+    if (isSubmitting) {
+      // 请求正在进行中，不执行重复操作
+      return
+    }
+
+    setIsSubmitting(true)
 
     try {
-      const response = await createArticle({
+      const response = await postArticle({
         title: values.title,
         body: content,
         //   is_show: false,
@@ -105,15 +122,21 @@ export default function Page({ params }) {
           username: 'admin',
         },
       })
-      console.log('save response:', response)
+      console.log('createArticle response:', response)
 
       if (response.id) {
-        console.log('内容保存成功！')
+        console.log('文章创建成功！')
+        messageApi.open({
+          type: 'success',
+          content: '文章创建成功！',
+        })
       } else {
-        console.error('内容保存失败！')
+        console.error('文章创建失败！')
       }
     } catch (error) {
-      console.error('发生错误：', error)
+      console.error('文章创建发生错误：', error)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -225,8 +248,8 @@ export default function Page({ params }) {
               删除
             </Button>
           )}
-          <Button type="primary" htmlType="submit">
-            保存
+          <Button type="primary" htmlType="submit" disabled={isSubmitting}>
+            {isSubmitting ? '提交中...' : '保存'}
           </Button>
         </Form.Item>
       </Form>

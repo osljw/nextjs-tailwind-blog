@@ -29,8 +29,24 @@ export async function getArticle(id) {
   return await res.json()
 }
 
+export async function postArticle(data) {
+  // console.log('post data:', data)
+  const res = await fetch(`http://${apiUrl}/article`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+
+  // console.log("res: ", res)
+
+  return await res.json()
+}
+
 export async function putArticle(data) {
-  console.log('put data:', data)
+  // console.log('put data:', data)
   const res = await fetch(`http://${apiUrl}/article/${data.id}`, {
     method: 'PUT',
     headers: {
