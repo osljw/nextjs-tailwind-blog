@@ -5,7 +5,8 @@ import { PageSEO } from '@/components/SEO'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
 import { ComponentProps } from 'react'
 
-import { getArticleList } from '@/lib/backend'
+import { getArticleList } from '@/lib/api'
+import { transformData } from '@/lib/backend'
 
 export const POSTS_PER_PAGE = 5
 
@@ -51,10 +52,11 @@ export async function getServerSideProps(context) {
   // slug, date, title, summary, tags, images
 
   // const posts = transformData(await res.json())
-  const posts = await getArticleList()
+  const posts = transformData(await getArticleList())
+
   // const posts = await getAllFilesFrontMatter('blog')
   // console.log("after trans posts:", posts)
-  console.log('/blog getServerSideProps')
+  console.log('/blog getServerSideProps:', posts)
   const initialDisplayPosts = posts.slice(0, POSTS_PER_PAGE)
   const pagination = {
     currentPage: 1,

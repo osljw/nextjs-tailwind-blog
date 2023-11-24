@@ -30,3 +30,27 @@ export async function getAllTags(type: 'blog' | 'authors') {
 
   return tagCount
 }
+
+export function extractTags(posts) {
+  const tagCount: Record<string, number> = {}
+
+  console.log('tags posts:========', posts)
+
+  // Iterate through each post, putting all found tags into `tags`
+  posts.forEach((data) => {
+    if (data.tags && data.draft !== true) {
+      data.tags.forEach((tag) => {
+        const formattedTag = kebabCase(tag)
+        if (formattedTag in tagCount) {
+          tagCount[formattedTag] += 1
+        } else {
+          tagCount[formattedTag] = 1
+        }
+      })
+    }
+  })
+
+  console.log('tags:========', tagCount)
+
+  return tagCount
+}

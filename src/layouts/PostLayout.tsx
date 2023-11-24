@@ -75,23 +75,24 @@ export default function PostLayout(props: Props) {
                 <dt className="sr-only">Authors</dt>
                 <dd>
                   <ul className="flex justify-center space-x-8 sm:space-x-12 xl:block xl:space-x-0 xl:space-y-8">
-                    {authorDetails.map((author) => (
-                      <li className="flex items-center space-x-2" key={author.name}>
-                        {author.avatar && (
-                          <Image
-                            src={author.avatar}
-                            width="38px"
-                            height="38px"
-                            alt="avatar"
-                            className="h-10 w-10 rounded-full"
-                          />
-                        )}
-                        <dl className="whitespace-nowrap text-sm font-medium leading-5">
-                          <dt className="sr-only">作者</dt>
-                          <dd className="text-gray-900 dark:text-gray-100">{author.name}</dd>
-                        </dl>
-                      </li>
-                    ))}
+                    {authorDetails &&
+                      authorDetails.map((author) => (
+                        <li className="flex items-center space-x-2" key={author.name}>
+                          {author.avatar && (
+                            <Image
+                              src={author.avatar}
+                              width="38px"
+                              height="38px"
+                              alt="avatar"
+                              className="h-10 w-10 rounded-full"
+                            />
+                          )}
+                          <dl className="whitespace-nowrap text-sm font-medium leading-5">
+                            <dt className="sr-only">作者</dt>
+                            <dd className="text-gray-900 dark:text-gray-100">{author.name}</dd>
+                          </dl>
+                        </li>
+                      ))}
                   </ul>
                 </dd>
               </dl>

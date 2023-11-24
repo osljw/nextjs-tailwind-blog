@@ -6,7 +6,8 @@ import { POSTS_PER_PAGE } from '../../blog'
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
 import { PostFrontMatter } from 'types/PostFrontMatter'
 
-import { getArticleList } from '@/lib/backend'
+import { transformData } from '@/lib/backend'
+import { getArticleList } from '@/lib/api'
 
 // export const getStaticPaths: GetStaticPaths<{ page: string }> = async () => {
 //   const totalPosts = await getAllFilesFrontMatter('blog')
@@ -54,9 +55,11 @@ export async function getServerSideProps(context) {
     params: { page },
   } = context
 
-  const posts = await getArticleList()
-
   // const posts = await getAllFilesFrontMatter('blog')
+  // const posts = await getArticleList()
+  const posts = transformData(await getArticleList())
+
+  console.log('/blog/page getServerSideProps:', page)
   const pageNumber = parseInt(page as string)
   const initialDisplayPosts = posts.slice(
     POSTS_PER_PAGE * (pageNumber - 1),

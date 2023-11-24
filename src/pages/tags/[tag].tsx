@@ -10,10 +10,16 @@ import { GetStaticProps, InferGetStaticPropsType } from 'next'
 import path from 'path'
 import { PostFrontMatter } from 'types/PostFrontMatter'
 
+import { transformData } from '@/lib/backend'
+import { getArticleList } from '@/lib/api'
+import { extractTags } from '@/lib/tags'
+
 const root = process.cwd()
 
 export async function getStaticPaths() {
-  const tags = await getAllTags('blog')
+  // const tags = await getAllTags('blog')
+  const allPosts = transformData(await getArticleList())
+  const tags = extractTags(allPosts)
 
   return {
     paths: Object.keys(tags).map((tag) => ({
@@ -29,7 +35,9 @@ export const getStaticProps: GetStaticProps<{ posts: PostFrontMatter[]; tag: str
   context
 ) => {
   const tag = context.params.tag as string
-  const allPosts = await getAllFilesFrontMatter('blog')
+  // const allPosts = await getAllFilesFrontMatter('blog')
+  const allPosts = transformData(await getArticleList())
+
   const filteredPosts = allPosts.filter(
     (post) => post.draft !== true && post.tags.map((t) => kebabCase(t)).includes(tag)
   )

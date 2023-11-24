@@ -16,7 +16,7 @@ import readingTime from 'reading-time'
 import PageTitle from '@/components/PageTitle'
 import generateRss from '@/lib/generate-rss'
 import { MDXLayoutRenderer } from '@/components/MDXComponents'
-import { getArticle, getArticleList, getArticleSlugList } from '@/lib/backend'
+import { getArticle, getArticleList } from '@/lib/api'
 import TinymceEditor from '@/editor/TinymceEditor'
 
 const DEFAULT_LAYOUT = 'PostLayout'
@@ -53,17 +53,37 @@ export async function getStaticPaths() {
 
   if (DEFAULT_DATA_FROM === 'file') {
     posts = getFiles('blog').filter((post) => post.endsWith('md'))
-  } else {
-    posts = await getArticleSlugList()
-  }
 
-  console.log('/blog/* getStaticPaths=========:')
-  return {
-    paths: posts.map((p) => ({
+    posts = posts.map((p) => ({
       params: {
         slug: formatSlug(p).split('/'),
       },
-    })),
+    }))
+  } else {
+    // posts = await getArticleSlugList()
+    posts = await getArticleList()
+    // console.log('getArticleSlugList posts:', posts)
+    // posts = posts.map((item) => ({
+    //   params: {
+    //     slug: `${item.slug}`.split('/'),
+    //   }
+    // }))
+    posts = posts.map((p) => `${p.id}`)
+
+    posts = posts.map((p) => {
+      // console.log("path:", p)
+      // console.log("path:", formatSlug(p).split('/'))
+      return {
+        params: {
+          slug: formatSlug(p).split('/'),
+        },
+      }
+    })
+  }
+
+  console.log('/blog/* getStaticPaths=========:', JSON.stringify(posts))
+  return {
+    paths: posts,
     fallback: false,
   }
 }
@@ -80,11 +100,11 @@ export const getStaticProps: GetStaticProps<{
   let post
 
   const slug = (params.slug as string[]).join('/')
-  const allPosts = await getAllFilesFrontMatter('blog')
-  // const allPosts = await getArticleList()
-  const postIndex = allPosts.findIndex((post) => formatSlug(post.slug) === slug)
-  const prev: { slug: string; title: string } = allPosts[postIndex + 1] || null
-  const next: { slug: string; title: string } = allPosts[postIndex - 1] || null
+  // const allPosts = await getAllFilesFrontMatter('blog')
+  // // const allPosts = await getArticleList()
+  // const postIndex = allPosts.findIndex((post) => formatSlug(post.slug) === slug)
+  // const prev: { slug: string; title: string } = allPosts[postIndex + 1] || null
+  // const next: { slug: string; title: string } = allPosts[postIndex - 1] || null
   // const post = await getFileBySlug<PostFrontMatter>('blog', slug)
   post = await getPostBySlug(slug)
   if (post.type) {
@@ -106,13 +126,15 @@ export const getStaticProps: GetStaticProps<{
   //   }
   // }
   // console.log('post:', post)
+
   // @ts-ignore
-  const authorList = post.frontMatter.authors || ['default']
-  const authorPromise = authorList.map(async (author) => {
-    const authorResults = await getFileBySlug<AuthorFrontMatter>('authors', [author])
-    return authorResults.frontMatter
-  })
-  const authorDetails = await Promise.all(authorPromise)
+  // const authorList = post.frontMatter.authors || ['default']
+  // const authorPromise = authorList.map(async (author) => {
+  //   const authorResults = await getFileBySlug<AuthorFrontMatter>('authors', [author])
+  //   return authorResults.frontMatter
+  // })
+  // const authorDetails = await Promise.all(authorPromise)
+
   // [
   //   {
   //     readingTime: { text: '1 min read', minutes: 0.17, time: 10200, words: 34 },
@@ -129,20 +151,21 @@ export const getStaticProps: GetStaticProps<{
   //     date: null
   //   }
   // ]
+
   // console.log('authorDetails:', authorDetails)
   // console.log('getFileBySlug post:', post)
   // rss
-  if (allPosts.length > 0) {
-    const rss = generateRss(allPosts)
-    fs.writeFileSync('./public/feed.xml', rss)
-  }
+  // if (allPosts.length > 0) {
+  //   const rss = generateRss(allPosts)
+  //   fs.writeFileSync('./public/feed.xml', rss)
+  // }
 
   return {
     props: {
       post,
-      authorDetails,
-      prev,
-      next,
+      // authorDetails,
+      // prev,
+      // next,
     },
   }
 }

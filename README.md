@@ -38,3 +38,13 @@ or
 ```bash
 npm run dev
 ```
+
+# dev
+
+- /blog
+
+  - getServerSideProps
+
+- /blog/[...slug]
+  - getStaticPaths
+  - getStaticProps
