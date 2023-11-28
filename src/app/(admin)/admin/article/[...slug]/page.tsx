@@ -4,20 +4,22 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { Form } from 'antd'
-import { Button, Input, Breadcrumb } from 'antd'
+import { Button, Radio, Input, Breadcrumb } from 'antd'
 import { message } from 'antd'
 
 import TinymceEditor from '@/editor/TinymceEditor'
+// import MonacoEditor from '@/editor/MonacoEditor'
+import MDXEditor from '@/editor/MDXEditor'
 
 import { getArticle, postArticle, putArticle, deleteArticle } from '@/lib/api'
 
 const layout = {
   labelCol: {
-    span: 1,
+    span: 2,
   },
-  // wrapperCol: {
-  //   span: 16,
-  // },
+  wrapperCol: {
+    span: 20,
+  },
 }
 
 /* eslint-disable no-template-curly-in-string */
@@ -34,15 +36,15 @@ const validateMessages = {
 /* eslint-enable no-template-curly-in-string */
 
 export default function Page({ params }) {
+  const slug = params.slug.join('')
+  const createMode = slug === 'create'
+
   const router = useRouter()
-  const [post, setPost] = useState({})
+  const [post, setPost] = useState({ type: createMode ? 'mdx' : undefined })
   const [content, setContent] = useState('')
   const [form] = Form.useForm()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [messageApi, contextHolder] = message.useMessage()
-
-  const slug = params.slug.join('')
-  const createMode = slug === 'create'
 
   useEffect(() => {
     if (!createMode) {
@@ -51,6 +53,7 @@ export default function Page({ params }) {
         setContent(value.body)
         form.setFieldsValue({
           title: value.title,
+          type: value.type,
         })
       })
     }
@@ -69,9 +72,7 @@ export default function Page({ params }) {
         id: slug,
         title: values.title,
         body: content,
-        //   is_show: false,
-        // tags: ["tag1", "tag2"],
-        // auth: 1,
+        type: values.type,
         tags: ['tag1', 'tag2'],
         auth: {
           username: 'admin',
@@ -109,13 +110,24 @@ export default function Page({ params }) {
 
     setIsSubmitting(true)
 
+    console.log('====== request:', {
+      title: values.title,
+      body: content,
+      //   is_show: false,
+      type: values.type,
+      tags: ['tag1', 'tag2'],
+      auth: {
+        // id: 1,
+        username: 'admin',
+      },
+    })
+
     try {
       const response = await postArticle({
         title: values.title,
         body: content,
         //   is_show: false,
-        // tags: ["tag1", "tag2"],
-        // auth: 1,
+        type: values.type,
         tags: ['tag1', 'tag2'],
         auth: {
           // id: 1,
@@ -132,6 +144,10 @@ export default function Page({ params }) {
         })
       } else {
         console.error('文章创建失败！')
+        messageApi.open({
+          type: 'error',
+          content: '文章创建失败！',
+        })
       }
     } catch (error) {
       console.error('文章创建发生错误：', error)
@@ -141,7 +157,8 @@ export default function Page({ params }) {
   }
 
   const onFinish = async (values) => {
-    console.log('form values:', values)
+    const allValues = form.getFieldsValue(true)
+    console.log('form values:', values, allValues)
     if (createMode) {
       createArticle(values)
     } else {
@@ -158,6 +175,29 @@ export default function Page({ params }) {
 
   console.log('article slug:', params.slug, ' post:', post)
   //   console.log('content:', content)
+
+  const handleTypeChange = (event) => {
+    const newValue = event.target.value
+
+    // 更新 post 对象中的 type 属性
+    setPost((prevPost) => ({
+      ...prevPost,
+      type: newValue,
+    }))
+  }
+
+  const renderEditor = () => {
+    if (post.type === 'html') {
+      return <TinymceEditor initialValue={post.body} setContent={setContent} />
+    } else if (post.type === 'mdx') {
+      return <MDXEditor initialValue={post.body} setContent={setContent} />
+    }
+
+    return null
+  }
+
+  console.log('======post:', post)
+
   return (
     <>
       <Breadcrumb
@@ -176,10 +216,6 @@ export default function Page({ params }) {
           },
         ]}
       />
-      {/* <h2> article slug: {params.slug} </h2> */}
-      {/* <TinymceEditor initialValue={post && post.body} readOnly={true} /> */}
-      {/* <Button type='primary' onClick={updateArticle}> 更新 </Button>
-          <TinymceEditor initialValue={post && post.body} setContent={setContent} /> */}
 
       <Form
         form={form}
@@ -190,6 +226,9 @@ export default function Page({ params }) {
         //     maxWidth: 600,
         // }}
         validateMessages={validateMessages}
+        initialValues={{
+          type: post.type,
+        }}
       >
         <Form.Item
           name={['title']}
@@ -202,6 +241,28 @@ export default function Page({ params }) {
         >
           <Input value={post.title} />
         </Form.Item>
+
+        <Form.Item
+          name={['type']}
+          label="文章类型"
+          // hidden={!createMode}
+          // rules={[
+          //   {
+          //     required: true,
+          //   },
+          // ]}
+        >
+          <Radio.Group
+            // defaultValue={post.type}
+            value={post.type}
+            buttonStyle="solid"
+            onChange={handleTypeChange}
+          >
+            <Radio.Button value="mdx">MDX</Radio.Button>
+            <Radio.Button value="html">HTML</Radio.Button>
+          </Radio.Group>
+        </Form.Item>
+
         {/* <Form.Item
                     name={['user', 'email']}
                     label="Email"
@@ -227,11 +288,14 @@ export default function Page({ params }) {
                     <InputNumber />
                 </Form.Item> */}
         <Form.Item label="文章内容">
-          {createMode ? (
+          {/* {post && post.type === 'html' && createMode ? (
             <TinymceEditor initialValue="" setContent={setContent} />
           ) : (
             <TinymceEditor initialValue={post && post.body} setContent={setContent} />
           )}
+
+          {post && post.type === 'mdx' && <MDXEditor initialValue={post && post.body} />} */}
+          {renderEditor()}
         </Form.Item>
         {/* <Form.Item name={['user', 'introduction']} label="Introduction">
                     <Input.TextArea />

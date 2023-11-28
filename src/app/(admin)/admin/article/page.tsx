@@ -102,7 +102,6 @@ export default function Page() {
           },
         ]}
       />
-      <h2> article list page </h2>
 
       {/* <Link href="/admin/article/create" passHref={true}></Link> */}
 

@@ -1,7 +1,7 @@
 let apiUrl =
   process.env.NODE_ENV === 'production' ? 'testshell.pythonanywhere.com/api' : '127.0.0.1:8000/api'
 
-apiUrl = 'testshell.pythonanywhere.com/api'
+// apiUrl = 'testshell.pythonanywhere.com/api'
 
 export async function getArticleList() {
   const res = await fetch(`http://${apiUrl}/article`, {

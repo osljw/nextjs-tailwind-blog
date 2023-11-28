@@ -1,3 +1,5 @@
+import 'katex/dist/katex.css'
+
 import { useRef } from 'react'
 import { compile, nodeTypes, run } from '@mdx-js/mdx'
 import { createStarryNight } from '@wooorm/starry-night'
@@ -16,14 +18,22 @@ import { useEffect, useState } from 'react'
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime'
 //import ReactDom from 'react-dom/client'
 import { ErrorBoundary } from 'react-error-boundary'
-import rehypeRaw from 'rehype-raw'
+
 import remarkDirective from 'remark-directive'
 import remarkFrontmatter from 'remark-frontmatter'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
+
+import rehypeRaw from 'rehype-raw'
+import rehypePrismPlus from 'rehype-prism-plus'
+import rehypeKatex from 'rehype-katex'
+// import rehypeMathjax from 'rehype-mathjax'
+
 import { removePosition } from 'unist-util-remove-position'
 import { visit } from 'unist-util-visit'
 import { VFile } from 'vfile'
+
+import remarkCodeTitles from '@/lib/remark-code-title'
 
 const runtime = { Fragment, jsx, jsxs }
 
@@ -36,7 +46,28 @@ const runtime = { Fragment, jsx, jsxs }
 //   init(root)
 // }
 
-export default function MDXEditor({ initialValue }) {
+const Editor = ({ value, onChange }) => {
+  return (
+    <textarea
+      className="h-full w-full bg-gray-100 p-4"
+      style={{ height: '60vh' }}
+      value={value}
+      onChange={onChange}
+    ></textarea>
+  )
+}
+
+const Preview = ({ value }) => {
+  return (
+    <div className="h-full w-full border-l p-4">
+      <p>{value}</p>
+    </div>
+  )
+}
+
+export default function MDXEditor({ initialValue, setContent }) {
+  const [text, setText] = useState(initialValue)
+
   const [directive, setDirective] = useState(false)
   const [development, setDevelopment] = useState(false)
   const [frontmatter, setFrontmatter] = useState(false)
@@ -49,12 +80,16 @@ export default function MDXEditor({ initialValue }) {
   const [raw, setRaw] = useState(false)
   const [show, setShow] = useState('result')
   const [value, setValue] = useState(initialValue)
-  const [evalResult, setEvalResult] = useState(
-    // Cast to more easily use actual value.
-    /** @type {unknown} */ undefined
-  )
+  const [evalResult, setEvalResult] = useState(undefined)
 
   const editorRef = useRef(null)
+
+  useEffect(() => {
+    setValue(initialValue)
+    setText(initialValue)
+  }, [initialValue])
+
+  // console.log("MDXEditor:::", initialValue )
 
   useEffect(() => {
     // const editor = document.querySelector('#js-editor')
@@ -70,6 +105,7 @@ export default function MDXEditor({ initialValue }) {
   useEffect(
     function () {
       async function go() {
+        console.log('=========go ==========')
         /** @type {PluggableList} */
         const recmaPlugins = []
         /** @type {PluggableList} */
@@ -79,8 +115,8 @@ export default function MDXEditor({ initialValue }) {
 
         if (directive) remarkPlugins.unshift(remarkDirective)
         if (frontmatter) remarkPlugins.unshift(remarkFrontmatter)
-        if (gfm) remarkPlugins.unshift(remarkGfm)
-        if (math) remarkPlugins.unshift(remarkMath)
+        // if (gfm) remarkPlugins.unshift(remarkGfm)
+        // if (math) remarkPlugins.unshift(remarkMath)
         if (raw) rehypePlugins.unshift([rehypeRaw, { passThrough: nodeTypes }])
 
         const file = new VFile({
@@ -88,9 +124,11 @@ export default function MDXEditor({ initialValue }) {
           value,
         })
 
-        if (show === 'esast') recmaPlugins.push([captureEsast])
-        if (show === 'hast') rehypePlugins.push([captureHast])
-        if (show === 'mdast') remarkPlugins.push([captureMdast])
+        // console.log("before compile String(file):", String(file))
+
+        // if (show === 'esast') recmaPlugins.push([captureEsast])
+        // if (show === 'hast') rehypePlugins.push([captureHast])
+        // if (show === 'mdast') remarkPlugins.push([captureMdast])
         /** @type {UnistNode | undefined} */
         let ast
 
@@ -99,9 +137,19 @@ export default function MDXEditor({ initialValue }) {
           jsx: show === 'code' || show === 'esast' ? jsx : false,
           outputFormat: show === 'result' || outputFormatFunctionBody ? 'function-body' : 'program',
           recmaPlugins,
-          rehypePlugins,
-          remarkPlugins,
+          remarkPlugins: [
+            remarkGfm,
+            // remarkCodeTitles,
+            remarkMath,
+          ],
+          rehypePlugins: [
+            [rehypePrismPlus, { ignoreMissing: true }],
+            rehypeKatex,
+            // rehypeMathjax,
+          ],
         })
+
+        // console.log("before run String(file):", String(file))
 
         if (show === 'result') {
           /** @type {MDXModule} */
@@ -213,17 +261,21 @@ export default function MDXEditor({ initialValue }) {
 
   return (
     <>
-      {/* <textarea
-        spellCheck="false"
-        className="playground-write"
-        value={value}
-        rows={value.split('\n').length + 1}
-        onChange={function (event) {
-          setValue(event.target.value)
-        }}
-      /> */}
+      <div className="flex">
+        <div className="w-1/2">
+          <Editor
+            value={value}
+            onChange={(event) => {
+              setValue(event.target.value)
+              if (setContent) setContent(event.target.value)
+            }}
+          />
+        </div>
+        <div className="w-1/2">
+          <Preview value={display} />
+        </div>
+      </div>
 
-      {display}
       {/* {compiledResult.ok ? compiledResult.value : (
         <div>
           <p>Could not compile code:</p>

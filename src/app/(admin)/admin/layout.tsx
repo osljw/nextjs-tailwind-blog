@@ -1,6 +1,8 @@
 'use client'
-// import '@/css/tailwind.css'
+import '@/css/tailwind.css'
 
+import { ThemeProvider } from 'next-themes'
+import { useTheme } from 'next-themes'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React from 'react'
@@ -21,6 +23,7 @@ const { Header, Content, Footer, Sider } = Layout
 
 export default function AdminLayout({ children }) {
   const router = useRouter()
+  const { theme } = useTheme()
 
   // label: 菜单显示名称， path：菜单跳转路由
   const menuConfig = {
@@ -43,7 +46,7 @@ export default function AdminLayout({ children }) {
     key,
   }))
 
-  console.log('menuItems:', menuItems)
+  console.log('menuItems:', menuItems, ' theme:', theme || 'light')
 
   const onClick = (e) => {
     console.log('click ', menuConfig[e.key])
@@ -52,47 +55,49 @@ export default function AdminLayout({ children }) {
 
   return (
     <>
-      <StyledComponentsRegistry>
-        <Layout hasSider>
-          <Sider
-            style={{
-              overflow: 'auto',
-              height: '100vh',
-              position: 'fixed',
-              left: 0,
-              top: 0,
-              bottom: 0,
-            }}
-          >
-            <div className="demo-logo-vertical" />
-            <Menu
-              onClick={onClick}
-              theme="dark"
-              mode="inline"
-              defaultSelectedKeys={['4']}
-              items={menuItems}
-            />
-          </Sider>
-          <Layout
-            className="site-layout"
-            style={{
-              marginLeft: 200,
-            }}
-          >
-            <Header
+      <ThemeProvider>
+        <StyledComponentsRegistry>
+          <Layout hasSider>
+            <Sider
               style={{
-                padding: 0,
-                // background: colorBgContainer,
+                overflow: 'auto',
+                height: '100vh',
+                position: 'fixed',
+                left: 0,
+                top: 0,
+                bottom: 0,
               }}
-            />
-            <Content
+              theme={theme || 'light'}
+            >
+              <div className="demo-logo-vertical" />
+              <Menu
+                onClick={onClick}
+                theme={theme || 'light'}
+                mode="inline"
+                // defaultSelectedKeys={['4']}
+                items={menuItems}
+              />
+            </Sider>
+            <Layout
+              className="site-layout"
               style={{
-                margin: '24px 16px 0',
-                overflow: 'initial',
+                marginLeft: 200,
               }}
             >
-              {children}
-              {/* <div
+              <Header
+                style={{
+                  padding: 0,
+                  // background: colorBgContainer,
+                }}
+              />
+              <Content
+                style={{
+                  margin: '24px 16px 0',
+                  overflow: 'initial',
+                }}
+              >
+                {children}
+                {/* <div
                 style={{
                   padding: 24,
                   textAlign: 'center',
@@ -115,17 +120,18 @@ export default function AdminLayout({ children }) {
                   )
                 }
               </div> */}
-            </Content>
-            <Footer
-              style={{
-                textAlign: 'center',
-              }}
-            >
-              Ant Design ©2023 Created by Ant UED
-            </Footer>
+              </Content>
+              <Footer
+                style={{
+                  textAlign: 'center',
+                }}
+              >
+                Ant Design ©2023 Created by Ant UED
+              </Footer>
+            </Layout>
           </Layout>
-        </Layout>
-      </StyledComponentsRegistry>
+        </StyledComponentsRegistry>
+      </ThemeProvider>
     </>
   )
 }

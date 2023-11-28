@@ -77,7 +77,7 @@ export async function getMDXSource(source: string) {
         rehypeKatex,
         [rehypeCitation, { path: path.join(root, 'data') }],
         [rehypePrismPlus, { ignoreMissing: true }],
-        rehypePresetMinify,
+        // rehypePresetMinify,
       ]
       return options
     },
