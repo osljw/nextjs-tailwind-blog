@@ -6,13 +6,25 @@ import SectionContainer from './SectionContainer'
 import Footer from './Footer'
 import MobileNav from './MobileNav'
 import ThemeSwitch from './ThemeSwitch'
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
+import { getPageList } from '@/lib/api/page'
+import { useState } from 'react'
 
 interface Props {
   children: ReactNode
 }
 
 const LayoutWrapper = ({ children }: Props) => {
+  const [navs, setNavs] = useState([])
+
+  useEffect(() => {
+    getPageList().then((pages) => {
+      console.log('pages:', pages)
+
+      setNavs(pages.map((page) => ({ href: page.url, title: 'test' })))
+    })
+  }, [])
+
   return (
     <SectionContainer>
       <div className="flex h-screen flex-col justify-between">
@@ -36,6 +48,16 @@ const LayoutWrapper = ({ children }: Props) => {
           <div className="flex items-center text-base leading-5">
             <div className="hidden sm:block">
               {headerNavLinks.map((link) => (
+                <Link
+                  key={link.title}
+                  href={link.href}
+                  className="p-1 font-medium text-gray-900 dark:text-gray-100 sm:p-4"
+                >
+                  {link.title}
+                </Link>
+              ))}
+
+              {navs.map((link) => (
                 <Link
                   key={link.title}
                   href={link.href}

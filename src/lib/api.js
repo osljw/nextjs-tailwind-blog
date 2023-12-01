@@ -1,19 +1,36 @@
-let apiUrl =
-  process.env.NODE_ENV === 'production' ? 'testshell.pythonanywhere.com/api' : '127.0.0.1:8000/api'
+import { apiUrl } from './api/config'
 
-// apiUrl = 'testshell.pythonanywhere.com/api'
-
-export async function getArticleList() {
-  const res = await fetch(`http://${apiUrl}/article`, {
-    // method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
+export async function getArticleList(data = {}) {
+  const params = new URLSearchParams()
+  Object.keys(data).forEach((key) => {
+    if (data[key] !== undefined) {
+      params.append(key, data[key])
+    }
   })
 
-  const posts = await res.json()
+  console.log('=========article request:', params.toString())
 
-  return posts
+  try {
+    const res = await fetch(`http://${apiUrl}/article?${params.toString()}`, {
+      // method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+    })
+
+    if (!res.ok) {
+      throw new Error('Error fetching article list')
+    }
+
+    const posts = await res.json()
+
+    return posts
+  } catch (error) {
+    // 错误处理逻辑
+    console.error('An error occurred while fetching the article list:', error)
+    // 可以选择返回一个默认的空数组或其他默认值
+    return []
+  }
 }
 
 export async function getArticle(id) {
@@ -56,13 +73,29 @@ export async function putArticle(data) {
     body: JSON.stringify(data),
   })
 
-  // console.log("res: ", res)
+  console.log('res: ', res)
+
+  return await res.json()
+}
+
+export async function patchArticle(data) {
+  console.log('pathch data:', data)
+  const res = await fetch(`http://${apiUrl}/article/${data.id}`, {
+    method: 'PATCH',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+
+  console.log('res: ', res)
 
   return await res.json()
 }
 
 export async function deleteArticle(id) {
-  console.log('delete data:', id)
+  // console.log('delete data:', id)
   const res = await fetch(`http://${apiUrl}/article/${id}`, {
     method: 'DELETE',
     headers: {

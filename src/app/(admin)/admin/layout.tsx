@@ -3,27 +3,27 @@ import '@/css/tailwind.css'
 
 import { ThemeProvider } from 'next-themes'
 import { useTheme } from 'next-themes'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React from 'react'
+import { useState, useEffect } from 'react'
 import StyledComponentsRegistry from '@/components/AntdRegistry'
 
-import {
-  AppstoreOutlined,
-  BarChartOutlined,
-  CloudOutlined,
-  ShopOutlined,
-  TeamOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from '@ant-design/icons'
-import { Layout, Menu, theme } from 'antd'
+import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons'
+import { Layout, Menu, theme as antdTheme } from 'antd'
 const { Header, Content, Footer, Sider } = Layout
 
 export default function AdminLayout({ children }) {
   const router = useRouter()
-  const { theme } = useTheme()
+  // const { theme, setTheme, resolvedTheme } = useTheme()
+  const [collapsed, setCollapsed] = useState(false)
+
+  const {
+    token: { colorBgContainer },
+  } = antdTheme.useToken()
+
+  const toggleSider = () => {
+    setCollapsed(!collapsed)
+  }
 
   // label: 菜单显示名称， path：菜单跳转路由
   const menuConfig = {
@@ -36,8 +36,12 @@ export default function AdminLayout({ children }) {
       path: '/admin/dashboard',
     },
     article: {
-      label: 'Article',
+      label: '文章管理',
       path: '/admin/article',
+    },
+    page: {
+      label: '页面管理',
+      path: '/admin/page',
     },
   }
 
@@ -46,7 +50,7 @@ export default function AdminLayout({ children }) {
     key,
   }))
 
-  console.log('menuItems:', menuItems, ' theme:', theme || 'light')
+  console.log('menuItems:', menuItems)
 
   const onClick = (e) => {
     console.log('click ', menuConfig[e.key])
@@ -55,78 +59,79 @@ export default function AdminLayout({ children }) {
 
   return (
     <>
-      <ThemeProvider>
+      <ThemeProvider defaultTheme="light" attribute="class">
         <StyledComponentsRegistry>
           <Layout hasSider>
             <Sider
+              breakpoint="sm"
+              collapsedWidth={0}
+              collapsible
+              trigger={null}
+              collapsed={collapsed}
               style={{
                 overflow: 'auto',
                 height: '100vh',
-                position: 'fixed',
-                left: 0,
-                top: 0,
-                bottom: 0,
+                // position: 'fixed',
+                // left: 0,
+                // top: 0,
+                // bottom: 0,
+                background: colorBgContainer,
               }}
-              theme={theme || 'light'}
+              onBreakpoint={(broken) => {
+                console.log('onBreakpoint:', broken)
+                if (broken) setCollapsed(true)
+                else setCollapsed(false)
+              }}
             >
-              <div className="demo-logo-vertical" />
+              {/* <div className="demo-logo-vertical" /> */}
               <Menu
                 onClick={onClick}
-                theme={theme || 'light'}
+                // theme={theme || 'light'}
                 mode="inline"
                 // defaultSelectedKeys={['4']}
                 items={menuItems}
               />
             </Sider>
             <Layout
-              className="site-layout"
               style={{
-                marginLeft: 200,
+                minHeight: '100vh',
               }}
             >
               <Header
                 style={{
                   padding: 0,
-                  // background: colorBgContainer,
+                  background: colorBgContainer,
                 }}
-              />
+              >
+                {collapsed ? (
+                  <MenuUnfoldOutlined
+                    className="ml-4 cursor-pointer text-2xl"
+                    onClick={toggleSider}
+                  />
+                ) : (
+                  <MenuFoldOutlined
+                    className="ml-4 cursor-pointer text-2xl"
+                    onClick={toggleSider}
+                  />
+                )}
+              </Header>
+
               <Content
                 style={{
-                  margin: '24px 16px 0',
-                  overflow: 'initial',
+                  marginLeft: '16px',
+                  marginRight: '16px',
+                  overflow: 'auto',
+                  background: colorBgContainer,
                 }}
               >
                 {children}
-                {/* <div
-                style={{
-                  padding: 24,
-                  textAlign: 'center',
-                  // background: colorBgContainer,
-                }}
-              >
-                <p>long content</p>
-                {
-                  // indicates very long content
-                  Array.from(
-                    {
-                      length: 100,
-                    },
-                    (_, index) => (
-                      <React.Fragment key={index}>
-                        {index % 20 === 0 && index ? 'more' : '...'}
-                        <br />
-                      </React.Fragment>
-                    ),
-                  )
-                }
-              </div> */}
               </Content>
               <Footer
                 style={{
                   textAlign: 'center',
                 }}
               >
-                Ant Design ©2023 Created by Ant UED
+                Admin ©2023 nextjs + antd + tailwind
               </Footer>
             </Layout>
           </Layout>

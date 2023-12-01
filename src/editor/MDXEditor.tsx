@@ -57,10 +57,10 @@ const Editor = ({ value, onChange }) => {
   )
 }
 
-const Preview = ({ value }) => {
+const Preview = ({ children }) => {
   return (
     <div className="h-full w-full border-l p-4">
-      <p>{value}</p>
+      <div className="prose max-w-none break-words pb-8 pt-10 dark:prose-dark">{children}</div>
     </div>
   )
 }
@@ -272,7 +272,7 @@ export default function MDXEditor({ initialValue, setContent }) {
           />
         </div>
         <div className="w-1/2">
-          <Preview value={display} />
+          <Preview>{display}</Preview>
         </div>
       </div>
 
