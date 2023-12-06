@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Breadcrumb, Table, Tag, Switch, Button, Pagination } from 'antd'
 import { useEffect, useState, useRef } from 'react'
 
+import formatDate from '@/lib/utils/formatDate'
 import { getArticleList, patchArticle } from '@/lib/api'
 
 export default function Page() {
@@ -67,8 +68,23 @@ export default function Page() {
     //   item.id === id ? { ...item, is_show: checked } : item
     // );
     // console.log("updatedData:", updatedData)
+    setLoading(true)
     patchArticle({ id, is_show: checked })
-    // fetchData({ page: currentPage, order: defaultSortOrder });
+      .then((res) => {
+        if (res.id === id) {
+          const updatedData = posts.map((item) =>
+            item.id === id ? { ...item, is_show: checked } : item
+          )
+          console.log('updatedDAta:', updatedData)
+          setPosts(updatedData)
+        }
+      })
+      .catch((error) => {
+        // 处理异常情况
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   const handlePageChange = (page) => {
@@ -127,12 +143,14 @@ export default function Page() {
       dataIndex: 'create_time',
       // key: "url",
       sorter: true,
+      render: (create_time) => <> {formatDate(create_time)} </>,
     },
     {
       title: '状态',
       dataIndex: 'valid',
       render: (_, record) => (
-        <Switch defaultChecked={record.is_show} onChange={handleSwitchChange(record.id)} />
+        // <Switch defaultChecked={record.is_show} onChange={handleSwitchChange(record.id)} />
+        <Switch checked={record.is_show} onChange={handleSwitchChange(record.id)} />
       ),
     },
     // {

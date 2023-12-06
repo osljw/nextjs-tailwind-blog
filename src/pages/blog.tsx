@@ -1,5 +1,5 @@
 import { getAllFilesFrontMatter } from '@/lib/mdx'
-import siteMetadata from '@/data/siteMetadata'
+import siteMetadata from '@/config/siteMetadata'
 import ListLayout from '@/layouts/ListLayout'
 import { PageSEO } from '@/components/SEO'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
@@ -52,7 +52,7 @@ export async function getServerSideProps(context) {
   // slug, date, title, summary, tags, images
 
   // const posts = transformData(await res.json())
-  const posts = transformData(await getArticleList())
+  const posts = transformData(await getArticleList({ is_show: true }))
 
   // const posts = await getAllFilesFrontMatter('blog')
   // console.log("after trans posts:", posts)

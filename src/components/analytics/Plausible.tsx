@@ -1,6 +1,6 @@
 import Script from 'next/script'
 
-import siteMetadata from '@/data/siteMetadata'
+import siteMetadata from '@/config/siteMetadata'
 
 const PlausibleScript = () => {
   return (

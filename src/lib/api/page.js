@@ -37,6 +37,17 @@ export async function getPage(id) {
   return await res.json()
 }
 
+export async function searchPage(query) {
+  const res = await fetch(`http://${apiUrl}/page?search=${query}`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+  })
+
+  return await res.json()
+}
+
 export async function postPage(data) {
   // console.log('post data:', data)
   const res = await fetch(`http://${apiUrl}/page`, {

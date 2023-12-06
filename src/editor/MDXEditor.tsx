@@ -34,6 +34,7 @@ import { visit } from 'unist-util-visit'
 import { VFile } from 'vfile'
 
 import remarkCodeTitles from '@/lib/remark-code-title'
+import { Button } from 'antd'
 
 const runtime = { Fragment, jsx, jsxs }
 
@@ -65,7 +66,14 @@ const Preview = ({ children }) => {
   )
 }
 
-export default function MDXEditor({ initialValue, setContent }) {
+const MyHeading = ({ children }) => <h3>{children}</h3>
+const MyLink = ({ href, children }) => (
+  <a href={href} target="_blank">
+    {children}
+  </a>
+)
+
+export default function MDXEditor({ initialValue, setContent, readOnly }) {
   const [text, setText] = useState(initialValue)
 
   const [directive, setDirective] = useState(false)
@@ -102,6 +110,8 @@ export default function MDXEditor({ initialValue, setContent }) {
     // }
   }, [])
 
+  console.log('-------------')
+
   useEffect(
     function () {
       async function go() {
@@ -124,15 +134,11 @@ export default function MDXEditor({ initialValue, setContent }) {
           value,
         })
 
-        // console.log("before compile String(file):", String(file))
-
-        // if (show === 'esast') recmaPlugins.push([captureEsast])
-        // if (show === 'hast') rehypePlugins.push([captureHast])
-        // if (show === 'mdast') remarkPlugins.push([captureMdast])
         /** @type {UnistNode | undefined} */
         let ast
 
         await compile(file, {
+          // baseUrl: '/',
           development: show === 'result' ? false : development,
           jsx: show === 'code' || show === 'esast' ? jsx : false,
           outputFormat: show === 'result' || outputFormatFunctionBody ? 'function-body' : 'program',
@@ -147,64 +153,42 @@ export default function MDXEditor({ initialValue, setContent }) {
             rehypeKatex,
             // rehypeMathjax,
           ],
+          // providerImportSource: './mdx-components.jsx'
         })
 
-        // console.log("before run String(file):", String(file))
+        console.log('after compile String(file):', String(file))
 
         if (show === 'result') {
           /** @type {MDXModule} */
           const mod = await run(String(file), {
             ...runtime,
-            baseUrl: window.location.href,
+            // baseUrl: window.location.href,
+            useMDXComponents: () => {
+              return {
+                // h1: MyHeading,
+                a: MyLink,
+                h1(props) {
+                  return <h2 {...props} />
+                },
+              }
+            },
           })
+          const MDXContent = mod.default
+          console.log('after run String(file):', String(file))
 
           return (
             <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[value]}>
-              <div className="playground-result">{mod.default({})}</div>
+              {/* <div className="playground-result">{mod.default({})}</div> */}
+              <MDXContent
+                components={{
+                  h1(props) {
+                    return <h2 {...props} />
+                  },
+                  Button,
+                }}
+              />
             </ErrorBoundary>
           )
-        }
-
-        function captureMdast() {
-          /**
-           * @param {MdastRoot} tree
-           *   Tree.
-           * @returns {undefined}
-           *   Nothing.
-           */
-          return function (tree) {
-            const clone = structuredClone(tree)
-            if (!positions) cleanUnistTree(clone)
-            ast = clone
-          }
-        }
-
-        function captureHast() {
-          /**
-           * @param {HastRoot} tree
-           *   Tree.
-           * @returns {undefined}
-           *   Nothing.
-           */
-          return function (tree) {
-            const clone = structuredClone(tree)
-            if (!positions) cleanUnistTree(clone)
-            ast = clone
-          }
-        }
-
-        function captureEsast() {
-          /**
-           * @param {Program} tree
-           *   Tree.
-           * @returns {undefined}
-           *   Nothing.
-           */
-          return function (tree) {
-            const clone = structuredClone(tree)
-            if (!positions) visitEstree(clone, removeFromEstree)
-            ast = clone
-          }
         }
       }
 
@@ -257,6 +241,14 @@ export default function MDXEditor({ initialValue, setContent }) {
         </div>
       )
     }
+  }
+
+  if (readOnly) {
+    return (
+      <>
+        <Preview>{display}</Preview>
+      </>
+    )
   }
 
   return (

@@ -26,37 +26,3 @@ export function transformData(oldData) {
 
   return newData
 }
-
-// export async function getArticleList() {
-//   const res = await fetch(`http://127.0.0.1:8000/api/article`, {
-//     // method: 'GET',
-//     headers: {
-//       Accept: 'application/json',
-//     },
-//   })
-
-//   // slug, date, title, summary, tags, images
-//   // const posts = transformData(await res.json())
-
-//   return posts
-// }
-
-// export async function getArticleSlugList() {
-//   const posts = await getArticleList()
-//   console.log('getArticleSlugList posts:', posts)
-//   return posts.map((item) => `${item.slug}`)
-// }
-
-// export async function getArticle(id) {
-//   const res = await fetch(`http://127.0.0.1:8000/api/article/${id}`, {
-//     // method: 'GET',
-//     headers: {
-//       Accept: 'application/json',
-//     },
-//   })
-
-//   // console.log("res: ", res)
-
-//   // slug, date, title, summary, tags, images
-//   return await res.json()
-// }

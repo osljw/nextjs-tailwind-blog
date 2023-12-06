@@ -1,5 +1,5 @@
 import Link from './Link'
-import siteMetadata from '@/data/siteMetadata'
+import siteMetadata from '@/config/siteMetadata'
 import SocialIcon from '@/components/social-icons'
 
 export default function Footer() {
@@ -21,7 +21,7 @@ export default function Footer() {
         </div>
         <div className="mb-8 text-sm text-gray-500 dark:text-gray-400">
           <a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer">
-            浙ICP备17007919号-1
+            {siteMetadata.icp}
           </a>
         </div>
       </div>

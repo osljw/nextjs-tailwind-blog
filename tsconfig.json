@@ -21,7 +21,8 @@
       "@/layouts/*": ["src/layouts/*"],
       "@/lib/*": ["src/lib/*"],
       "@/css/*": ["src/css/*"],
-      "@/editor/*": ["src/editor/*"]
+      "@/editor/*": ["src/editor/*"],
+      "@/config/*": ["src/config/*"]
       // "@/*": ["src/*"],
     },
     "plugins": [

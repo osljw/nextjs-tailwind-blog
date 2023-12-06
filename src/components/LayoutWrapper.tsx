@@ -1,5 +1,5 @@
-import siteMetadata from '@/data/siteMetadata'
-import headerNavLinks from '@/data/headerNavLinks'
+import siteMetadata from '@/config/siteMetadata'
+import headerNavLinks from 'src/config/headerNavLinks'
 import Logo from '@/data/logo.svg'
 import Link from './Link'
 import SectionContainer from './SectionContainer'
@@ -21,7 +21,7 @@ const LayoutWrapper = ({ children }: Props) => {
     getPageList().then((pages) => {
       console.log('pages:', pages)
 
-      setNavs(pages.map((page) => ({ href: page.url, title: 'test' })))
+      setNavs(pages.map((page) => ({ href: `/${page.url}`, title: page.url })))
     })
   }, [])
 

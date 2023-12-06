@@ -6,16 +6,17 @@ const siteMetadata = {
   language: 'en-us',
   theme: 'system', // system, dark or light
   siteUrl: 'siteUrl',
-  siteRepo: 'https://github.com/maqi1520/nextjs-tailwind-blog',
+  // siteRepo: 'https://github.com/maqi1520/nextjs-tailwind-blog',
   siteLogo: '/static/images/logo.png',
   image: '/static/images/avatar.png',
   socialBanner: '/static/images/twitter-card.png',
   email: 'email@163.com',
-  github: 'https://github.com/maqi1520',
-  juejin: 'https://juejin.cn/user/2189882895384093',
-  zhihu: 'https://www.zhihu.com/people/xiao-ma-15-3',
+  // github: 'https://github.com/maqi1520',
+  // juejin: 'https://juejin.cn/user/2189882895384093',
+  // zhihu: 'https://www.zhihu.com/people/xiao-ma-15-3',
   locale: 'zh-CN',
-  welcome: '自在，轻盈，我本不想停留',
+  welcome: 'Welcome',
+  icp: 'ICP备1号-1',
   analytics: {
     //如果要使用分析提供程序，则必须将其添加到。
     //`next.config.js`文件中的内容安全策略。

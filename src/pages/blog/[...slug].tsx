@@ -4,6 +4,7 @@ import {
   formatSlug,
   getAllFilesFrontMatter,
   getFileBySlug,
+  getPostBySlug,
   getFiles,
   getMDXSource,
 } from '@/lib/mdx'
@@ -18,35 +19,10 @@ import generateRss from '@/lib/generate-rss'
 import { MDXLayoutRenderer } from '@/components/MDXComponents'
 import { getArticle, getArticleList } from '@/lib/api'
 import TinymceEditor from '@/editor/TinymceEditor'
+import MDXEditor from '@/editor/MDXEditor'
 
 const DEFAULT_LAYOUT = 'PostLayout'
 const DEFAULT_DATA_FROM = 'backend' // file | backend
-
-async function getPostBySlug(slug) {
-  const data = await getArticle(slug)
-
-  // console.log('getPostBySlug', data)
-
-  if (data.type === 'mdx') {
-    const source = data.body
-    const { code, toc, frontmatter } = await getMDXSource(source)
-
-    return {
-      mdxSource: code,
-      toc,
-      frontMatter: {
-        readingTime: readingTime(code),
-        slug: slug || null,
-        fileName: null,
-        ...frontmatter,
-        date: frontmatter.date ? new Date(frontmatter.date).toISOString() : null,
-        draft: false,
-      },
-    }
-  }
-
-  return data
-}
 
 export async function getStaticPaths() {
   let posts
@@ -176,10 +152,16 @@ export default function Blog({
   prev,
   next,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  if (post.type) {
+  if (post.type === 'html') {
     return (
       <>
         <TinymceEditor initialValue={post.body} readOnly={true} />
+      </>
+    )
+  } else if (post.type === 'mdx') {
+    return (
+      <>
+        <MDXEditor initialValue={post.body} readOnly={true} />
       </>
     )
   }

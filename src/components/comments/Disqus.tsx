@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import siteMetadata from '@/data/siteMetadata'
+import siteMetadata from '@/config/siteMetadata'
 import { PostFrontMatter } from 'types/PostFrontMatter'
 
 interface Props {
@@ -36,7 +36,7 @@ const Disqus = ({ frontMatter }: Props) => {
   }
 
   return (
-    <div className="pt-6 pb-6 text-center text-gray-700 dark:text-gray-300">
+    <div className="pb-6 pt-6 text-center text-gray-700 dark:text-gray-300">
       {enableLoadComments && <button onClick={LoadComments}>Load Comments</button>}
       <div className="disqus-frame" id={COMMENTS_ID} />
     </div>

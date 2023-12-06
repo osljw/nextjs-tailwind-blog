@@ -142,6 +142,7 @@ export default function Page({ params }) {
           type: 'success',
           content: '文章创建成功！',
         })
+        router.push(`/admin/article/${response.id}`)
       } else {
         console.error('文章创建失败！')
         messageApi.open({

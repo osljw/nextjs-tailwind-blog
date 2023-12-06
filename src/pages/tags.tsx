@@ -1,7 +1,7 @@
 import Link from '@/components/Link'
 import { PageSEO } from '@/components/SEO'
 import Tag from '@/components/Tag'
-import siteMetadata from '@/data/siteMetadata'
+import siteMetadata from '@/config/siteMetadata'
 import { extractTags, getAllTags } from '@/lib/tags'
 import kebabCase from '@/lib/utils/kebabCase'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
@@ -12,7 +12,7 @@ import { transformData } from '@/lib/backend'
 export const getStaticProps: GetStaticProps<{ tags: Record<string, number> }> = async () => {
   // const tags = await getAllTags('blog')
 
-  const allPosts = transformData(await getArticleList())
+  const allPosts = transformData(await getArticleList({ is_show: true }))
   const tags = extractTags(allPosts)
 
   return { props: { tags } }

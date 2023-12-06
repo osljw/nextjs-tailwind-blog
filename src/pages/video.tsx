@@ -1,5 +1,5 @@
 import { PageSEO } from '@/components/SEO'
-import siteMetadata from '@/data/siteMetadata'
+import siteMetadata from '@/config/siteMetadata'
 import { getVideos, VItem } from '@/lib/video'
 import Image from 'next/image'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'

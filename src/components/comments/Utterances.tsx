@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useTheme } from 'next-themes'
 
-import siteMetadata from '@/data/siteMetadata'
+import siteMetadata from '@/config/siteMetadata'
 
 interface Props {
   issueTerm: string
@@ -46,7 +46,7 @@ const Utterances = ({ issueTerm }: Props) => {
 
   // Added `relative` to fix a weird bug with `utterances-frame` position
   return (
-    <div className="pt-6 pb-6 text-center text-gray-700 dark:text-gray-300">
+    <div className="pb-6 pt-6 text-center text-gray-700 dark:text-gray-300">
       {enableLoadComments && <button onClick={LoadComments}>Load Comments</button>}
       <div className="utterances-frame relative" id={COMMENTS_ID} />
     </div>

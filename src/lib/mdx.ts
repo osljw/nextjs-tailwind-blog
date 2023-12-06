@@ -23,6 +23,8 @@ import rehypeCitation from 'rehype-citation'
 import rehypePrismPlus from 'rehype-prism-plus'
 import rehypePresetMinify from 'rehype-preset-minify'
 
+import { getArticle } from './api'
+
 const root = process.cwd()
 
 export function getFiles(type: 'blog' | 'authors') {
@@ -91,6 +93,32 @@ export async function getMDXSource(source: string) {
   })
 
   return { code, toc, frontmatter }
+}
+
+export async function getPostBySlug(slug) {
+  const data = await getArticle(slug)
+
+  // console.log('getPostBySlug', data)
+
+  // if (data.type === 'mdx') {
+  //   const source = data.body
+  //   const { code, toc, frontmatter } = await getMDXSource(source)
+
+  //   return {
+  //     mdxSource: code,
+  //     toc,
+  //     frontMatter: {
+  //       readingTime: readingTime(code),
+  //       slug: slug || null,
+  //       fileName: null,
+  //       ...frontmatter,
+  //       date: frontmatter.date ? new Date(frontmatter.date).toISOString() : null,
+  //       draft: false,
+  //     },
+  //   }
+  // }
+
+  return data
 }
 
 export async function getFileBySlug<T>(type: 'authors' | 'blog', slug: string | string[]) {
