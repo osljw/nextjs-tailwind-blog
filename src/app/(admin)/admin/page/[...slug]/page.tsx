@@ -54,6 +54,7 @@ export default function Page({ params }) {
         setContent(value.body)
         form.setFieldsValue({
           type: value.type,
+          url: value.url,
         })
       })
     }
@@ -218,6 +219,7 @@ export default function Page({ params }) {
         // }}
         validateMessages={validateMessages}
         initialValues={{
+          url: post.url,
           type: post.type,
         }}
       >
@@ -232,16 +234,7 @@ export default function Page({ params }) {
         >
           <Input value={post.url} />
         </Form.Item>
-        <Form.Item
-          name={['type']}
-          label="页面类型"
-          // hidden={!createMode}
-          // rules={[
-          //   {
-          //     required: true,
-          //   },
-          // ]}
-        >
+        <Form.Item name={['type']} label="页面类型">
           <Radio.Group
             // defaultValue={post.type}
             value={post.type}
