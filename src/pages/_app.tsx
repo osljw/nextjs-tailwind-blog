@@ -20,14 +20,9 @@ const isSocket = process.env.SOCKET
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider attribute="class" defaultTheme={siteMetadata.theme}>
-      <Head>
+      {/* <Head>
         <meta content="width=device-width, initial-scale=1" name="viewport" />
-        {/* <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9163539254569883"
-          crossOrigin="anonymous"
-        ></script> */}
-      </Head>
+      </Head> */}
       {isDevelopment && isSocket && <ClientReload />}
       <Analytics />
       <LayoutWrapper>

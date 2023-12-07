@@ -17,6 +17,8 @@ export default function AdminLayout({ children }) {
   // const { theme, setTheme, resolvedTheme } = useTheme()
   const [collapsed, setCollapsed] = useState(false)
 
+  const siderWidth = collapsed ? '0px' : '200px'
+
   const {
     token: { colorBgContainer },
   } = antdTheme.useToken()
@@ -71,10 +73,8 @@ export default function AdminLayout({ children }) {
               style={{
                 overflow: 'auto',
                 height: '100vh',
-                // position: 'fixed',
-                // left: 0,
-                // top: 0,
-                // bottom: 0,
+                position: 'fixed',
+                width: siderWidth,
                 background: colorBgContainer,
               }}
               onBreakpoint={(broken) => {
@@ -95,6 +95,7 @@ export default function AdminLayout({ children }) {
             <Layout
               style={{
                 minHeight: '100vh',
+                marginLeft: siderWidth,
               }}
             >
               <Header
@@ -118,17 +119,24 @@ export default function AdminLayout({ children }) {
 
               <Content
                 style={{
-                  marginLeft: '16px',
-                  marginRight: '16px',
-                  overflow: 'auto',
                   background: colorBgContainer,
                 }}
               >
-                {children}
+                <div
+                  style={{
+                    marginLeft: '16px',
+                    marginRight: '16px',
+                    overflow: 'auto',
+                  }}
+                >
+                  {children}
+                </div>
               </Content>
               <Footer
                 style={{
                   textAlign: 'center',
+                  // padding: 0,
+                  background: colorBgContainer,
                 }}
               >
                 Admin ©2023 nextjs + antd + tailwind
