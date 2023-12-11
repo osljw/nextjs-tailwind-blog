@@ -11,7 +11,7 @@ export async function getArticleList(data = {}) {
   console.log('=========article request:', params.toString())
 
   try {
-    const res = await fetch(`http://${apiUrl}/article?${params.toString()}`, {
+    const res = await fetch(`${apiUrl}/article?${params.toString()}`, {
       // method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -34,7 +34,7 @@ export async function getArticleList(data = {}) {
 }
 
 export async function getArticle(id) {
-  const res = await fetch(`http://${apiUrl}/article/${id}`, {
+  const res = await fetch(`${apiUrl}/article/${id}`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -48,7 +48,7 @@ export async function getArticle(id) {
 
 export async function postArticle(data) {
   // console.log('post data:', data)
-  const res = await fetch(`http://${apiUrl}/article`, {
+  const res = await fetch(`${apiUrl}/article`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -64,7 +64,7 @@ export async function postArticle(data) {
 
 export async function putArticle(data) {
   // console.log('put data:', data)
-  const res = await fetch(`http://${apiUrl}/article/${data.id}`, {
+  const res = await fetch(`${apiUrl}/article/${data.id}`, {
     method: 'PUT',
     headers: {
       Accept: 'application/json',
@@ -80,7 +80,7 @@ export async function putArticle(data) {
 
 export async function patchArticle(data) {
   console.log('pathch data:', data)
-  const res = await fetch(`http://${apiUrl}/article/${data.id}`, {
+  const res = await fetch(`${apiUrl}/article/${data.id}`, {
     method: 'PATCH',
     headers: {
       Accept: 'application/json',
@@ -96,7 +96,7 @@ export async function patchArticle(data) {
 
 export async function deleteArticle(id) {
   // console.log('delete data:', id)
-  const res = await fetch(`http://${apiUrl}/article/${id}`, {
+  const res = await fetch(`${apiUrl}/article/${id}`, {
     method: 'DELETE',
     headers: {
       Accept: 'application/json',

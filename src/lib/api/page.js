@@ -2,7 +2,7 @@ import { apiUrl } from './config'
 
 export async function getPageList() {
   try {
-    const res = await fetch(`http://${apiUrl}/page`, {
+    const res = await fetch(`${apiUrl}/page`, {
       // method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -25,7 +25,7 @@ export async function getPageList() {
 }
 
 export async function getPage(id) {
-  const res = await fetch(`http://${apiUrl}/page/${id}`, {
+  const res = await fetch(`${apiUrl}/page/${id}`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -38,7 +38,7 @@ export async function getPage(id) {
 }
 
 export async function searchPage(query) {
-  const res = await fetch(`http://${apiUrl}/page?search=${query}`, {
+  const res = await fetch(`${apiUrl}/page?search=${query}`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -50,7 +50,7 @@ export async function searchPage(query) {
 
 export async function postPage(data) {
   // console.log('post data:', data)
-  const res = await fetch(`http://${apiUrl}/page`, {
+  const res = await fetch(`${apiUrl}/page`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -66,7 +66,7 @@ export async function postPage(data) {
 
 export async function putPage(data) {
   // console.log('put data:', data)
-  const res = await fetch(`http://${apiUrl}/page/${data.id}`, {
+  const res = await fetch(`${apiUrl}/page/${data.id}`, {
     method: 'PUT',
     headers: {
       Accept: 'application/json',
@@ -82,7 +82,7 @@ export async function putPage(data) {
 
 export async function deletePage(id) {
   // console.log('delete data:', id)
-  const res = await fetch(`http://${apiUrl}/page/${id}`, {
+  const res = await fetch(`${apiUrl}/page/${id}`, {
     method: 'DELETE',
     headers: {
       Accept: 'application/json',

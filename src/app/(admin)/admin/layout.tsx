@@ -2,19 +2,19 @@
 import '@/css/tailwind.css'
 
 import { ThemeProvider } from 'next-themes'
-import { useTheme } from 'next-themes'
+
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useState, useEffect } from 'react'
 import StyledComponentsRegistry from '@/components/AntdRegistry'
 
-import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons'
-import { Layout, Menu, theme as antdTheme } from 'antd'
-const { Header, Content, Footer, Sider } = Layout
+import { Button, Layout, Menu, theme as antdTheme } from 'antd'
+import { AdminHeader } from './AdminHeader'
+import RequireAuth from '@/components/RequireAuth'
+const { Content, Footer, Sider } = Layout
 
-export default function AdminLayout({ children }) {
+function AdminLayout({ children }) {
   const router = useRouter()
-  // const { theme, setTheme, resolvedTheme } = useTheme()
   const [collapsed, setCollapsed] = useState(false)
 
   const siderWidth = collapsed ? '0px' : '200px'
@@ -61,7 +61,7 @@ export default function AdminLayout({ children }) {
 
   return (
     <>
-      <ThemeProvider defaultTheme="light" attribute="class">
+      <ThemeProvider defaultTheme="dark" attribute="class">
         <StyledComponentsRegistry>
           <Layout hasSider>
             <Sider
@@ -76,6 +76,7 @@ export default function AdminLayout({ children }) {
                 position: 'fixed',
                 width: siderWidth,
                 background: colorBgContainer,
+                // backgroundColor: 'transparent'
               }}
               onBreakpoint={(broken) => {
                 console.log('onBreakpoint:', broken)
@@ -86,7 +87,6 @@ export default function AdminLayout({ children }) {
               {/* <div className="demo-logo-vertical" /> */}
               <Menu
                 onClick={onClick}
-                // theme={theme || 'light'}
                 mode="inline"
                 // defaultSelectedKeys={['4']}
                 items={menuItems}
@@ -98,24 +98,7 @@ export default function AdminLayout({ children }) {
                 marginLeft: siderWidth,
               }}
             >
-              <Header
-                style={{
-                  padding: 0,
-                  background: colorBgContainer,
-                }}
-              >
-                {collapsed ? (
-                  <MenuUnfoldOutlined
-                    className="ml-4 cursor-pointer text-2xl"
-                    onClick={toggleSider}
-                  />
-                ) : (
-                  <MenuFoldOutlined
-                    className="ml-4 cursor-pointer text-2xl"
-                    onClick={toggleSider}
-                  />
-                )}
-              </Header>
+              <AdminHeader collapsed={collapsed} toggleSider={toggleSider} />
 
               <Content
                 style={{
@@ -123,10 +106,11 @@ export default function AdminLayout({ children }) {
                 }}
               >
                 <div
+                  // className="prose max-w-none break-words pb-8 pt-10 dark:prose-dark"
                   style={{
                     marginLeft: '16px',
                     marginRight: '16px',
-                    overflow: 'auto',
+                    // overflow: 'auto',
                   }}
                 >
                   {children}
@@ -148,3 +132,5 @@ export default function AdminLayout({ children }) {
     </>
   )
 }
+
+export default RequireAuth(AdminLayout)

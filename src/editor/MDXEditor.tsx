@@ -47,21 +47,34 @@ const runtime = { Fragment, jsx, jsxs }
 //   init(root)
 // }
 
-const Editor = ({ value, onChange }) => {
+const Editor = ({ value, onChange, onScroll }) => {
   return (
-    <textarea
-      className="h-full w-full bg-gray-100 p-4"
-      style={{ height: '60vh' }}
-      value={value}
-      onChange={onChange}
-    ></textarea>
+    <div className="h-full w-full border-l p-4">
+      <textarea
+        className="h-full w-full bg-gray-100 p-4"
+        style={{ height: '60vh' }}
+        value={value}
+        onChange={onChange}
+        onScroll={onScroll}
+      ></textarea>
+    </div>
   )
 }
 
-const Preview = ({ children }) => {
+const Preview = ({ children, onScroll }) => {
   return (
     <div className="h-full w-full border-l p-4">
-      <div className="prose max-w-none break-words pb-8 pt-10 dark:prose-dark">{children}</div>
+      <div
+        className="prose max-w-none break-words pb-8 pt-10 dark:prose-dark"
+        style={{
+          backgroundColor: 'dark',
+          height: '60vh',
+          overflow: 'auto',
+        }}
+        onScroll={onScroll}
+      >
+        {children}
+      </div>
     </div>
   )
 }
@@ -91,26 +104,26 @@ export default function MDXEditor({ initialValue, setContent, readOnly }) {
   const [evalResult, setEvalResult] = useState(undefined)
 
   const editorRef = useRef(null)
+  const previewRef = useRef(null)
 
   useEffect(() => {
     setValue(initialValue)
     setText(initialValue)
   }, [initialValue])
 
-  // console.log("MDXEditor:::", initialValue )
+  const handleScroll = () => {
+    console.log('========handleScroll', editorRef.current.scrollTop)
+    if (editorRef.current && previewRef.current) {
+      const editorElement = editorRef.current
+      const previewElement = previewRef.current
 
-  useEffect(() => {
-    // const editor = document.querySelector('#js-editor')
-    // // if (window.location.pathname === '/playground/' && editor) {
-    // if (editor) {
-    //   const root = document.createElement('div')
-    //   root.classList.add('playground')
-    //   editor.after(root)
-    //   init(root)
-    // }
-  }, [])
+      console.log('editorElement.scrollTop: ', editorElement.scrollTop)
 
-  console.log('-------------')
+      if (editorElement.scrollTop !== previewElement.scrollTop) {
+        previewElement.scrollTop = editorElement.scrollTop
+      }
+    }
+  }
 
   useEffect(
     function () {
@@ -256,15 +269,19 @@ export default function MDXEditor({ initialValue, setContent, readOnly }) {
       <div className="flex">
         <div className="w-1/2">
           <Editor
+            ref={editorRef}
             value={value}
             onChange={(event) => {
               setValue(event.target.value)
               if (setContent) setContent(event.target.value)
             }}
+            onScroll={handleScroll}
           />
         </div>
         <div className="w-1/2">
-          <Preview>{display}</Preview>
+          <Preview ref={previewRef} onScroll={handleScroll}>
+            {display}
+          </Preview>
         </div>
       </div>
 

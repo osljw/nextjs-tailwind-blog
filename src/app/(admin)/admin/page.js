@@ -1,4 +1,5 @@
-// import { useState } from 'react'
+'use client'
+
 import { Layout, Menu, Breadcrumb } from 'antd'
 import { HomeOutlined, UserOutlined, DashboardOutlined } from '@ant-design/icons'
 
