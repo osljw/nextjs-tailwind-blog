@@ -1,5 +1,7 @@
 import { formatSlug } from './mdx'
 
+import { dateSortDesc } from './utils'
+
 export function transformData(oldData) {
   //   console.log('oldData:', oldData)
 
@@ -24,5 +26,5 @@ export function transformData(oldData) {
     }
   })
 
-  return newData
+  return newData.sort((a, b) => dateSortDesc(a.date, b.date))
 }

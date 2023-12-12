@@ -117,8 +117,12 @@ export const renderCanvas = function () {
   let running = true
   let frame = 1
   function resizeCanvas() {
-    ctx.canvas.width = window.innerWidth
-    ctx.canvas.height = window.innerHeight
+    // ctx.canvas.width = window.innerWidth
+    // ctx.canvas.height = window.innerHeight
+
+    const { clientWidth, clientHeight } = document.documentElement
+    ctx.canvas.width = clientWidth
+    ctx.canvas.height = clientHeight
   }
 
   resizeCanvas()

@@ -1,4 +1,6 @@
 import { useRef } from 'react'
+
+import { apiUrl } from '@/lib/api/config'
 import { Editor } from '@tinymce/tinymce-react'
 
 // const uploadImage = ()
@@ -52,8 +54,6 @@ export default function TinymceEditor({ initialValue, setContent, readOnly }) {
           }}
           initialValue={initialValue}
           init={{
-            // height: 500,
-
             plugins: [
               'advlist',
               'autolink',
@@ -78,8 +78,6 @@ export default function TinymceEditor({ initialValue, setContent, readOnly }) {
             toolbar: false,
             statusbar: false,
             branding: false,
-
-            // min_height: 2000,
             content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
           }}
           disabled={true}
@@ -149,10 +147,10 @@ export default function TinymceEditor({ initialValue, setContent, readOnly }) {
             'bold italic forecolor | alignleft aligncenter ' +
             'alignright alignjustify | bullist numlist outdent indent | ' +
             'removeformat | image | help',
-          images_upload_url: 'http://localhost:8000/api/upload',
+          images_upload_url: `${apiUrl}/upload`,
           // images_upload_handler: example_image_upload_handler,
-          paste_preprocess: paste_preprocess,
-          paste_postprocess: paste_postprocess,
+          // paste_preprocess: paste_preprocess,
+          // paste_postprocess: paste_postprocess,
           content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
         }}
       />

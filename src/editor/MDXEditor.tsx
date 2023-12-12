@@ -259,7 +259,11 @@ export default function MDXEditor({ initialValue, setContent, readOnly }) {
   if (readOnly) {
     return (
       <>
-        <Preview>{display}</Preview>
+        {/* <Preview>{display}</Preview> */}
+
+        <div className="h-full w-full border-l p-4">
+          <div className="prose max-w-none break-words pb-8 pt-10 dark:prose-dark">{display}</div>
+        </div>
       </>
     )
   }

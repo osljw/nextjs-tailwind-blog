@@ -1,10 +1,10 @@
+import { GetStaticProps, InferGetStaticPropsType } from 'next'
+import { ComponentProps } from 'react'
+
 import { getAllFilesFrontMatter } from '@/lib/mdx'
 import siteMetadata from '@/config/siteMetadata'
 import ListLayout from '@/layouts/ListLayout'
 import { PageSEO } from '@/components/SEO'
-import { GetStaticProps, InferGetStaticPropsType } from 'next'
-import { ComponentProps } from 'react'
-
 import { getArticleList } from '@/lib/api'
 import { transformData } from '@/lib/backend'
 
