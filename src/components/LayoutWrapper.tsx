@@ -21,7 +21,7 @@ const LayoutWrapper = ({ children }: Props) => {
     getPageList().then((pages) => {
       console.log('pages:', pages)
 
-      setNavs(pages.map((page) => ({ href: `/${page.url}`, title: page.url })))
+      setNavs(pages.map((page) => ({ href: `/${page.url}`, title: page.title })))
     })
   }, [])
 

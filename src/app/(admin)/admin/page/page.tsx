@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Table, Switch, Button, Breadcrumb } from 'antd'
 import { useEffect, useState } from 'react'
 
-import { getPageList } from '@/lib/api/page'
+import { getPageList, patchPage } from '@/lib/api/page'
 
 export default function Page() {
   // const res = await fetch(`http://127.0.0.1:8000/api/article`, {
@@ -22,7 +22,7 @@ export default function Page() {
 
   useEffect(() => {
     const fetchData = async () => {
-      setPosts(await getPageList())
+      setPosts(await getPageList({ valid: 'all' }))
     }
 
     fetchData()
@@ -41,6 +41,23 @@ export default function Page() {
     //   item.id === id ? { ... , switch: checked } : item
     // );
     // setTableData(updatedData);
+
+    // setLoading(true)
+    patchPage({ id, valid: checked })
+      .then((res) => {
+        if (res.id === id) {
+          const updatedData = posts.map((item) =>
+            item.id === id ? { ...item, valid: checked } : item
+          )
+          setPosts(updatedData)
+        }
+      })
+      .catch((error) => {
+        // 处理异常情况
+      })
+      .finally(() => {
+        // setLoading(false)
+      })
   }
 
   const columns = [
@@ -48,6 +65,11 @@ export default function Page() {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
+    },
+    {
+      title: 'Title',
+      dataIndex: 'title',
+      key: 'title',
     },
     {
       title: 'URL',
@@ -68,11 +90,7 @@ export default function Page() {
         <Switch defaultChecked={record.valid} onChange={handleSwitchChange(record.id)} />
       ),
     },
-    // {
-    //   title: "url",
-    //   dataIndex: "url",
-    //   key: "url",
-    // },
+
     // {
     //   title: 'Tags',
     //   dataIndex: 'tags',

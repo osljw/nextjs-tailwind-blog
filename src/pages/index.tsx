@@ -2,7 +2,7 @@ import Link from '@/components/Link'
 import { PageSEO } from '@/components/SEO'
 import siteMetadata from '@/config/siteMetadata'
 
-import { getArticleList } from '@/lib/api'
+import { getArticleList } from '@/lib/api/article'
 import { transformData } from '@/lib/backend'
 import { getAllFilesFrontMatter } from '@/lib/mdx'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'

@@ -20,10 +20,6 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   (config) => {
-    // 每次发送请求之前本地存储中是否存在token，也可以通过Redux这里只演示通过本地拿到token
-    // 如果存在，则统一在http请求的header都加上token，这样后台根据token判断你的登录情况
-    // 即使本地存在token，也有可能token是过期的，所以在响应拦截器中要对返回状态进行判断
-    const token = window.localStorage.getItem('token') || window.sessionStorage.getItem('token')
     // //在每次的请求中添加token
     // config.data = Object.assign({}, config.data, {
     //   token: token,
@@ -32,8 +28,15 @@ service.interceptors.request.use(
     config.headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json; charset=utf-8',
-      Authorization: 'JWT ' + token,
     }
+
+    if (typeof window !== 'undefined') {
+      const token = window.localStorage.getItem('token') || window.sessionStorage.getItem('token')
+      if (token) {
+        config.headers['Authorization'] = 'JWT ' + token
+      }
+    }
+
     //config.data = QS.stringify(config.data);
     return config
   },

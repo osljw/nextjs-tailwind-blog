@@ -103,8 +103,8 @@ export default function MDXEditor({ initialValue, setContent, readOnly }) {
   const [value, setValue] = useState(initialValue)
   const [evalResult, setEvalResult] = useState(undefined)
 
-  const editorRef = useRef(null)
-  const previewRef = useRef(null)
+  const editorRef = useRef()
+  const previewRef = useRef()
 
   useEffect(() => {
     setValue(initialValue)
@@ -112,7 +112,7 @@ export default function MDXEditor({ initialValue, setContent, readOnly }) {
   }, [initialValue])
 
   const handleScroll = () => {
-    console.log('========handleScroll', editorRef.current.scrollTop)
+    console.log('========handleScroll', editorRef.current, previewRef.current)
     if (editorRef.current && previewRef.current) {
       const editorElement = editorRef.current
       const previewElement = previewRef.current
@@ -272,20 +272,45 @@ export default function MDXEditor({ initialValue, setContent, readOnly }) {
     <>
       <div className="flex">
         <div className="w-1/2">
-          <Editor
+          {/* <Editor
             ref={editorRef}
             value={value}
             onChange={(event) => {
               setValue(event.target.value)
               if (setContent) setContent(event.target.value)
             }}
-            onScroll={handleScroll}
-          />
+            onScroll={() => handleScroll(editorRef, previewRef)}
+          /> */}
+
+          <div className="h-full w-full border-l p-4">
+            <textarea
+              ref={editorRef}
+              className="h-full w-full bg-gray-100 p-4"
+              style={{ height: '60vh' }}
+              value={value}
+              onChange={(event) => {
+                setValue(event.target.value)
+                if (setContent) setContent(event.target.value)
+              }}
+              // onScroll={handleScroll}
+            ></textarea>
+          </div>
         </div>
+
         <div className="w-1/2">
-          <Preview ref={previewRef} onScroll={handleScroll}>
+          <div
+            ref={previewRef}
+            // className="prose max-w-none break-words pb-8 pt-10 dark:prose-dark"
+            className="h-full w-full border-l p-4"
+            style={{
+              // backgroundColor: 'dark',
+              height: '60vh',
+              overflow: 'auto',
+            }}
+            // onScroll={handleScroll}
+          >
             {display}
-          </Preview>
+          </div>
         </div>
       </div>
 

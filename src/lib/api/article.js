@@ -1,4 +1,5 @@
-import { apiUrl } from './api/config'
+import { apiUrl } from './config'
+import service from './config'
 
 export async function getArticleList(data = {}) {
   const params = new URLSearchParams()
@@ -9,28 +10,30 @@ export async function getArticleList(data = {}) {
   })
 
   console.log('=========article request:', params.toString())
+  const res = await service.get(`/article?${params.toString()}`)
+  return res
 
-  try {
-    const res = await fetch(`${apiUrl}/article?${params.toString()}`, {
-      // method: 'GET',
-      headers: {
-        Accept: 'application/json',
-      },
-    })
+  // try {
+  //   const res = await fetch(`${apiUrl}/article?${params.toString()}`, {
+  //     // method: 'GET',
+  //     headers: {
+  //       Accept: 'application/json',
+  //     },
+  //   })
 
-    if (!res.ok) {
-      throw new Error('Error fetching article list')
-    }
+  //   if (!res.ok) {
+  //     throw new Error('Error fetching article list')
+  //   }
 
-    const posts = await res.json()
+  //   const posts = await res.json()
 
-    return posts
-  } catch (error) {
-    // 错误处理逻辑
-    console.error('An error occurred while fetching the article list:', error)
-    // 可以选择返回一个默认的空数组或其他默认值
-    return []
-  }
+  //   return posts
+  // } catch (error) {
+  //   // 错误处理逻辑
+  //   console.error('An error occurred while fetching the article list:', error)
+  //   // 可以选择返回一个默认的空数组或其他默认值
+  //   return []
+  // }
 }
 
 export async function getArticle(id) {
@@ -105,7 +108,5 @@ export async function deleteArticle(id) {
     // body: JSON.stringify(data),
   })
 
-  // console.log("res: ", res)
-
-  return await res.json()
+  return res
 }

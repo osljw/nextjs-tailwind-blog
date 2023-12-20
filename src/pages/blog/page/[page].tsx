@@ -7,7 +7,7 @@ import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
 import { PostFrontMatter } from 'types/PostFrontMatter'
 
 import { transformData } from '@/lib/backend'
-import { getArticleList } from '@/lib/api'
+import { getArticleList } from '@/lib/api/article'
 
 // export const getStaticPaths: GetStaticPaths<{ page: string }> = async () => {
 //   const totalPosts = await getAllFilesFrontMatter('blog')

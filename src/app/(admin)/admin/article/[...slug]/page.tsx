@@ -11,7 +11,7 @@ import TinymceEditor from '@/editor/TinymceEditor'
 // import MonacoEditor from '@/editor/MonacoEditor'
 import MDXEditor from '@/editor/MDXEditor'
 
-import { getArticle, postArticle, putArticle, deleteArticle } from '@/lib/api'
+import { getArticle, postArticle, putArticle, deleteArticle } from '@/lib/api/article'
 
 const layout = {
   labelCol: {
@@ -170,7 +170,9 @@ export default function Page({ params }) {
   const onDelete = () => {
     deleteArticle(slug).then((res) => {
       console.log('delete res:', res)
-      router.push('/admin/article')
+      if (res.status === 204) {
+        router.push('/admin/article')
+      }
     })
   }
 

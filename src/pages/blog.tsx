@@ -5,7 +5,7 @@ import { getAllFilesFrontMatter } from '@/lib/mdx'
 import siteMetadata from '@/config/siteMetadata'
 import ListLayout from '@/layouts/ListLayout'
 import { PageSEO } from '@/components/SEO'
-import { getArticleList } from '@/lib/api'
+import { getArticleList } from '@/lib/api/article'
 import { transformData } from '@/lib/backend'
 
 export const POSTS_PER_PAGE = 5
@@ -52,11 +52,11 @@ export async function getServerSideProps(context) {
   // slug, date, title, summary, tags, images
 
   // const posts = transformData(await res.json())
-  const posts = transformData(await getArticleList({ is_show: true }))
+  const posts = transformData(await getArticleList())
 
   // const posts = await getAllFilesFrontMatter('blog')
   // console.log("after trans posts:", posts)
-  console.log('/blog getServerSideProps:', posts)
+  // console.log('/blog getServerSideProps:', posts)
   const initialDisplayPosts = posts.slice(0, POSTS_PER_PAGE)
   const pagination = {
     currentPage: 1,

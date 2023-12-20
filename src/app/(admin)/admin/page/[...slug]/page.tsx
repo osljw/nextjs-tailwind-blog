@@ -55,6 +55,7 @@ export default function Page({ params }) {
         form.setFieldsValue({
           type: value.type,
           url: value.url,
+          title: value.title,
         })
       })
     }
@@ -71,9 +72,10 @@ export default function Page({ params }) {
     try {
       const response = await putPage({
         id: slug,
+        title: values.title,
         url: values.url,
-        body: content,
         type: values.type,
+        body: content,
         auth: {
           username: 'admin',
         },
@@ -122,6 +124,7 @@ export default function Page({ params }) {
     try {
       const response = await postPage({
         url: values.url,
+        title: values.title,
         body: content,
         type: values.type,
         auth: {
@@ -151,6 +154,15 @@ export default function Page({ params }) {
     }
   }
 
+  const onDelete = () => {
+    deletePage(slug).then((res) => {
+      console.log('delete res:', res)
+      if (res.status === 204) {
+        router.push('/admin/page')
+      }
+    })
+  }
+
   const onFinish = async (values) => {
     const allValues = form.getFieldsValue(true)
     console.log('form values:', values, allValues)
@@ -159,13 +171,6 @@ export default function Page({ params }) {
     } else {
       updatePage(values)
     }
-  }
-
-  const onDelete = () => {
-    deletePage(slug).then((res) => {
-      console.log('delete res:', res)
-      router.push('/admin/page')
-    })
   }
 
   console.log('page slug:', params.slug, ' post:', post)
@@ -219,10 +224,22 @@ export default function Page({ params }) {
         // }}
         validateMessages={validateMessages}
         initialValues={{
+          title: post.title,
           url: post.url,
           type: post.type,
         }}
       >
+        <Form.Item
+          name={['title']}
+          label="Title"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input value={post.title} />
+        </Form.Item>
         <Form.Item
           name={['url']}
           label="URL"

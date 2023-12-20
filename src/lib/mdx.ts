@@ -23,7 +23,7 @@ import rehypeCitation from 'rehype-citation'
 import rehypePrismPlus from 'rehype-prism-plus'
 import rehypePresetMinify from 'rehype-preset-minify'
 
-import { getArticle } from './api'
+import { getArticle } from './api/article'
 
 const root = process.cwd()
 

@@ -6,7 +6,7 @@ import { extractTags, getAllTags } from '@/lib/tags'
 import kebabCase from '@/lib/utils/kebabCase'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
 
-import { getArticleList } from '@/lib/api'
+import { getArticleList } from '@/lib/api/article'
 import { transformData } from '@/lib/backend'
 
 export const getStaticProps: GetStaticProps<{ tags: Record<string, number> }> = async () => {

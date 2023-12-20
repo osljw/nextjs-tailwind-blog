@@ -34,7 +34,7 @@ export async function getAllTags(type: 'blog' | 'authors') {
 export function extractTags(posts) {
   const tagCount: Record<string, number> = {}
 
-  console.log('tags posts:========', posts)
+  // console.log('tags posts:========', posts)
 
   // Iterate through each post, putting all found tags into `tags`
   posts.forEach((data) => {

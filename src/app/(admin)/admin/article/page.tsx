@@ -7,7 +7,7 @@ import { Breadcrumb, Table, Tag, Switch, Button, Pagination } from 'antd'
 import { useEffect, useState, useRef } from 'react'
 
 import formatDate from '@/lib/utils/formatDate'
-import { getArticleList, patchArticle } from '@/lib/api'
+import { getArticleList, patchArticle } from '@/lib/api/article'
 
 export default function Page() {
   const router = useRouter()
@@ -23,6 +23,7 @@ export default function Page() {
   const fetchData = async ({ page, order }) => {
     try {
       const res = await getArticleList({
+        all: true,
         page,
         ordering: sortField && order ? `${order === 'ascend' ? '' : '-'}${sortField}` : undefined,
       })
