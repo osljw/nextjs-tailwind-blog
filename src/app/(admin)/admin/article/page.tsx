@@ -3,11 +3,13 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-import { Breadcrumb, Table, Tag, Switch, Button, Pagination } from 'antd'
+import { Breadcrumb, Table, Tag, Switch, Button, Pagination, Divider, Input } from 'antd'
 import { useEffect, useState, useRef } from 'react'
 
 import formatDate from '@/lib/utils/formatDate'
 import { getArticleList, patchArticle } from '@/lib/api/article'
+
+const { Search } = Input
 
 export default function Page() {
   const router = useRouter()
@@ -19,14 +21,21 @@ export default function Page() {
   const [sortField, setSortField] = useState('id')
   const [defaultSortOrder, setDefaultSortOrder] = useState('descend')
   const [sortOrder, setSortOrder] = useState('descend')
+  const [searchValue, setSearchValue] = useState('')
 
-  const fetchData = async ({ page, order }) => {
+  const fetchData = async ({ page, order, search }) => {
     try {
-      const res = await getArticleList({
+      const params = {
         all: true,
         page,
         ordering: sortField && order ? `${order === 'ascend' ? '' : '-'}${sortField}` : undefined,
-      })
+      }
+
+      if (search) {
+        params.search = search
+      }
+
+      const res = await getArticleList(params)
       const { results, count } = res
       setPosts(results)
       setTotal(count)
@@ -39,7 +48,7 @@ export default function Page() {
 
   useEffect(() => {
     setLoading(true)
-    fetchData({ page: 1, order: sortOrder })
+    fetchData({ page: 1, order: sortOrder, search: searchValue })
   }, [])
 
   useEffect(() => {
@@ -90,7 +99,7 @@ export default function Page() {
 
   const handlePageChange = (page) => {
     setLoading(true)
-    fetchData({ page, order: defaultSortOrder })
+    fetchData({ page, order: defaultSortOrder, search: searchValue })
   }
 
   const handleTableChange = (pagination, filters, sorter) => {
@@ -98,12 +107,19 @@ export default function Page() {
     console.log('handleTableChange sorter:', field, order)
 
     if (order) {
-      fetchData({ page: currentPage, order })
+      fetchData({ page: currentPage, order, search: searchValue })
     }
 
     setSortField(field)
     setSortOrder(order)
     setDefaultSortOrder(order ? order : defaultSortOrder)
+  }
+
+  const onSearch = (value, _e, info) => {
+    console.log('search:', value)
+    console.log(info?.source, value)
+
+    fetchData({ page: 1, order: defaultSortOrder, search: searchValue })
   }
 
   const columns = [
@@ -195,6 +211,19 @@ export default function Page() {
           </Button>
         </div>
       </div>
+
+      <Divider />
+
+      <Search
+        className="mb-4"
+        placeholder="搜索文章"
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+        onSearch={onSearch}
+        style={{
+          width: 200,
+        }}
+      />
 
       <div style={{ height: '400px', position: 'relative' }}>
         <Table

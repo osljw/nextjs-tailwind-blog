@@ -20,7 +20,7 @@ const MAX_DISPLAY = 5
 // }
 
 export async function getServerSideProps(context) {
-  const posts = transformData(await getArticleList({ is_show: true }))
+  const posts = transformData(await getArticleList())
 
   return {
     props: {

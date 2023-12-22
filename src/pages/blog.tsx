@@ -41,18 +41,9 @@ export const POSTS_PER_PAGE = 5
 // }
 
 export async function getServerSideProps(context) {
-  // console.log("blog getServerSideProps context: ", context)
-  // const res = await fetch(`http://127.0.0.1:8000/api/article`,  {
-  //   // method: 'GET',
-  //   headers: {
-  //     'Accept': 'application/json'
-  //   }
-  // })
-
-  // slug, date, title, summary, tags, images
-
   // const posts = transformData(await res.json())
   const posts = transformData(await getArticleList())
+  // console.log('Blog getServerSideProps:', posts)
 
   // const posts = await getAllFilesFrontMatter('blog')
   // console.log("after trans posts:", posts)
@@ -77,7 +68,6 @@ export default function Blog({
   initialDisplayPosts,
   pagination,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  console.log('Blog posts:')
   return (
     <>
       <PageSEO title={`全部文章 - ${siteMetadata.author}`} description={siteMetadata.description} />

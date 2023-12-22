@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-import { Table, Switch, Button, Breadcrumb } from 'antd'
+import { Table, Switch, Button, Breadcrumb, Divider } from 'antd'
 import { useEffect, useState } from 'react'
 
 import { getPageList, patchPage } from '@/lib/api/page'
@@ -136,9 +136,9 @@ export default function Page() {
         </div>
       </div>
 
-      <>
-        <Table rowKey={(record) => record.id} columns={columns} dataSource={posts} />
-      </>
+      <Divider />
+
+      <Table rowKey={(record) => record.id} columns={columns} dataSource={posts} />
     </>
   )
 }

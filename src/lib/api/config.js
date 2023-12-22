@@ -28,6 +28,7 @@ service.interceptors.request.use(
     config.headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json; charset=utf-8',
+      // 'Cache-Control': 'no-cache',
     }
 
     if (typeof window !== 'undefined') {
@@ -38,6 +39,7 @@ service.interceptors.request.use(
     }
 
     //config.data = QS.stringify(config.data);
+    console.log('====config:', config.headers)
     return config
   },
   (error) => {

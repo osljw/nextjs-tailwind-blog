@@ -169,7 +169,7 @@ export default function MDXEditor({ initialValue, setContent, readOnly }) {
           // providerImportSource: './mdx-components.jsx'
         })
 
-        console.log('after compile String(file):', String(file))
+        // console.log('after compile String(file):', String(file))
 
         if (show === 'result') {
           /** @type {MDXModule} */
@@ -187,7 +187,7 @@ export default function MDXEditor({ initialValue, setContent, readOnly }) {
             },
           })
           const MDXContent = mod.default
-          console.log('after run String(file):', String(file))
+          // console.log('after run String(file):', String(file))
 
           return (
             <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[value]}>
@@ -261,7 +261,7 @@ export default function MDXEditor({ initialValue, setContent, readOnly }) {
       <>
         {/* <Preview>{display}</Preview> */}
 
-        <div className="h-full w-full border-l p-4">
+        <div className="h-full w-full p-4">
           <div className="prose max-w-none break-words pb-8 pt-10 dark:prose-dark">{display}</div>
         </div>
       </>

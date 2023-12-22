@@ -36,59 +36,63 @@ export async function getPageList(data = {}) {
 }
 
 export async function getPage(id) {
-  const res = await fetch(`${apiUrl}/page/${id}`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-  })
+  // const res = await fetch(`${apiUrl}/page/${id}`, {
+  //   method: 'GET',
+  //   headers: {
+  //     Accept: 'application/json',
+  //   },
+  // })
 
-  // console.log("res: ", res)
+  // // console.log("res: ", res)
 
-  return await res.json()
+  // return await res.json()
+  return service.get(`/page/${id}`)
 }
 
 export async function searchPage(query) {
-  const res = await fetch(`${apiUrl}/page?search=${query}`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-  })
+  // const res = await fetch(`${apiUrl}/page?search=${query}`, {
+  //   method: 'GET',
+  //   headers: {
+  //     Accept: 'application/json',
+  //   },
+  // })
 
-  return await res.json()
+  // return await res.json()
+  return service.get(`/page?search=${query}`)
 }
 
 export async function postPage(data) {
-  // console.log('post data:', data)
-  const res = await fetch(`${apiUrl}/page`, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  })
+  // // console.log('post data:', data)
+  // const res = await fetch(`${apiUrl}/page`, {
+  //   method: 'POST',
+  //   headers: {
+  //     Accept: 'application/json',
+  //     'Content-Type': 'application/json',
+  //   },
+  //   body: JSON.stringify(data),
+  // })
 
-  // console.log("res: ", res)
+  // // console.log("res: ", res)
 
-  return await res.json()
+  // return await res.json()
+  return service.post(`/page`, data)
 }
 
 export async function putPage(data) {
-  // console.log('put data:', data)
-  const res = await fetch(`${apiUrl}/page/${data.id}`, {
-    method: 'PUT',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  })
+  // // console.log('put data:', data)
+  // const res = await fetch(`${apiUrl}/page/${data.id}`, {
+  //   method: 'PUT',
+  //   headers: {
+  //     Accept: 'application/json',
+  //     'Content-Type': 'application/json',
+  //   },
+  //   body: JSON.stringify(data),
+  // })
 
-  // console.log("res: ", res)
+  // // console.log("res: ", res)
 
-  return await res.json()
+  // return await res.json()
+  return service.put(`/page/${data.id}`, data)
 }
 
 export async function patchPage(data) {
@@ -98,17 +102,18 @@ export async function patchPage(data) {
 }
 
 export async function deletePage(id) {
-  // console.log('delete data:', id)
-  const res = await fetch(`${apiUrl}/page/${id}`, {
-    method: 'DELETE',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    // body: JSON.stringify(data),
-  })
+  // // console.log('delete data:', id)
+  // const res = await fetch(`${apiUrl}/page/${id}`, {
+  //   method: 'DELETE',
+  //   headers: {
+  //     Accept: 'application/json',
+  //     'Content-Type': 'application/json',
+  //   },
+  //   // body: JSON.stringify(data),
+  // })
 
-  // console.log("res: ", res)
+  // // console.log("res: ", res)
 
-  return res
+  // return res
+  return service.delete(`/page/${id}`)
 }
