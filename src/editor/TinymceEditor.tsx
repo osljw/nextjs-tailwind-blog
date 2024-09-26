@@ -93,23 +93,24 @@ export default function TinymceEditor({ initialValue, setContent, readOnly }) {
         tinymceScriptSrc={'/tinymce/tinymce.min.js'}
         onInit={(evt, editor) => {
           editor.on('paste', function (e) {
-            console.log('paste=========', e)
-            var clipboardData = e.clipboardData || window.clipboardData
-            if (clipboardData && clipboardData.files && clipboardData.files.length) {
-              e.preventDefault() // 阻止默认粘贴行为
+            console.log('oninit paste event =========', e)
+            // var clipboardData = e.clipboardData || window.clipboardData
+            // if (clipboardData && clipboardData.files && clipboardData.files.length) {
+            //   console.log('Pasted image data:', clipboardData)
+            //   e.preventDefault() // 阻止默认粘贴行为
 
-              var file = clipboardData.files[0]
-              var reader = new FileReader()
+            //   var file = clipboardData.files[0]
+            //   var reader = new FileReader()
 
-              reader.onload = function (event) {
-                var dataUrl = event.target.result
+            //   reader.onload = function (event) {
+            //     var dataUrl = event.target.result
 
-                // 在这里可以使用 dataUrl 进行进一步处理，比如上传到服务器、显示预览等
-                console.log('Pasted image data:', dataUrl)
-              }
+            //     // 在这里可以使用 dataUrl 进行进一步处理，比如上传到服务器、显示预览等
+            //     console.log('Pasted image data:', dataUrl)
+            //   }
 
-              reader.readAsDataURL(file)
-            }
+            //   reader.readAsDataURL(file)
+            // }
           })
 
           editorRef.current = editor
@@ -148,26 +149,16 @@ export default function TinymceEditor({ initialValue, setContent, readOnly }) {
             'alignright alignjustify | bullist numlist outdent indent | ' +
             'removeformat | image | help',
           images_upload_url: `${apiUrl}/upload`,
+          // images_upload_base_path: apiUrl.endsWith('/api') ? apiUrl.slice(0, -3) : apiUrl,
+          images_upload_base_path: 'https://www.sxycbwg.cn/',
+          automatic_uploads: false,
           // images_upload_handler: example_image_upload_handler,
+          // paste_data_images: true,
           // paste_preprocess: paste_preprocess,
           // paste_postprocess: paste_postprocess,
           content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
         }}
       />
-      {/* <div className="container mx-auto">
-        <button
-          className="m-2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-          onClick={log}
-        >
-          Log editor content
-        </button>
-        <button
-          className="m-2 rounded bg-green-500 px-4 py-2 font-bold text-white hover:bg-green-700"
-          onClick={handleSave}
-        >
-          Save content
-        </button>
-      </div> */}
     </>
   )
 }

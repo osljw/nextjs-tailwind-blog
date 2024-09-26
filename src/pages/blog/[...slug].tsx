@@ -17,7 +17,7 @@ import readingTime from 'reading-time'
 import PageTitle from '@/components/PageTitle'
 import generateRss from '@/lib/generate-rss'
 import { MDXLayoutRenderer } from '@/components/MDXComponents'
-import { getArticle, getArticleList } from '@/lib/api'
+import { getArticle, getArticleList } from '@/lib/api/article'
 import TinymceEditor from '@/editor/TinymceEditor'
 import MDXEditor from '@/editor/MDXEditor'
 

@@ -7,3 +7,10 @@ export async function login(data) {
 
   return res
 }
+
+export async function refresh_token() {
+  // 向后端发送登录请求
+  const res = await service.post(`${apiUrl}/token/refresh`, data)
+
+  return res
+}

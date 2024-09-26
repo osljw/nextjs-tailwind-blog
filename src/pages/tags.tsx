@@ -12,7 +12,7 @@ import { transformData } from '@/lib/backend'
 export const getStaticProps: GetStaticProps<{ tags: Record<string, number> }> = async () => {
   // const tags = await getAllTags('blog')
 
-  const allPosts = transformData(await getArticleList({ is_show: true }))
+  const allPosts = transformData(await getArticleList())
   const tags = extractTags(allPosts)
 
   return { props: { tags } }

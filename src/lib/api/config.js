@@ -1,10 +1,24 @@
 import axios from 'axios'
-
+import { jwtDecode } from 'jwt-decode'
 // // export const apiUrl = process.env.NODE_ENV === 'production' ? 'testshell.pythonanywhere.com/api' : '127.0.0.1:8000/api'
 // export const apiUrl =
 //   process.env.NODE_ENV === 'production'
 //     ? 'http://testshell.pythonanywhere.com/api'
 //     : 'http://192.168.0.106:8000/api'
+
+function isTokenExpired(token) {
+  try {
+    const decoded = jwtDecode(token)
+    const dateNow = new Date()
+
+    console.log('decoded token:', decoded)
+
+    return decoded.exp < dateNow.getTime() / 1000
+  } catch (err) {
+    console.log('err:', err)
+    return false
+  }
+}
 
 const product_url = 'http://testshell.pythonanywhere.com/api'
 // const product_url = "http://127.0.0.1:8000/api";
@@ -19,7 +33,7 @@ const service = axios.create({
 
 // 请求拦截器
 service.interceptors.request.use(
-  (config) => {
+  async (config) => {
     // //在每次的请求中添加token
     // config.data = Object.assign({}, config.data, {
     //   token: token,
@@ -33,13 +47,25 @@ service.interceptors.request.use(
 
     if (typeof window !== 'undefined') {
       const token = window.localStorage.getItem('token') || window.sessionStorage.getItem('token')
-      if (token) {
-        config.headers['Authorization'] = 'JWT ' + token
+      // if (token && refreshToken && isTokenExpired(token)) {
+      //   config.headers['Authorization'] = 'JWT ' + token
+      // }
+
+      // console.log("===token:", token)
+
+      if (token && isTokenExpired(token)) {
+        // const response = await apiClient.post('/api/token/refresh/', { refresh: refreshToken });
+        // const newAccessToken = response.data.access;
+
+        // localStorage.setItem('access_token', newAccessToken);
+        localStorage.removeItem('token')
+        // config.headers.Authorization = `JWT ${newAccessToken}`;
+      } else if (token) {
+        config.headers.Authorization = `JWT ${token}`
       }
     }
 
-    //config.data = QS.stringify(config.data);
-    console.log('====config:', config.headers)
+    // console.log('====config:', config)
     return config
   },
   (error) => {

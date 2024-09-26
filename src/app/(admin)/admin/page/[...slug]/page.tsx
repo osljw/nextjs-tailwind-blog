@@ -11,7 +11,6 @@ import TinymceEditor from '@/editor/TinymceEditor'
 // import MonacoEditor from '@/editor/MonacoEditor'
 import MDXEditor from '@/editor/MDXEditor'
 
-// import { getArticle, postArticle, putArticle, deleteArticle } from '@/lib/api'
 import { getPage, postPage, putPage, deletePage } from '@/lib/api/page'
 
 const layout = {

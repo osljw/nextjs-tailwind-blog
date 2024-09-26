@@ -11,29 +11,49 @@ import path from 'path'
 import { PostFrontMatter } from 'types/PostFrontMatter'
 
 import { transformData } from '@/lib/backend'
-import { getArticleList } from '@/lib/api'
+import { getArticleList } from '@/lib/api/article'
 import { extractTags } from '@/lib/tags'
 
 const root = process.cwd()
 
-export async function getStaticPaths() {
-  // const tags = await getAllTags('blog')
-  const allPosts = transformData(await getArticleList())
-  const tags = extractTags(allPosts)
+// export async function getStaticPaths() {
+//   // const tags = await getAllTags('blog')
+//   const allPosts = transformData(await getArticleList())
+//   const tags = extractTags(allPosts)
 
-  return {
-    paths: Object.keys(tags).map((tag) => ({
-      params: {
-        tag,
-      },
-    })),
-    fallback: false,
-  }
-}
+//   return {
+//     paths: Object.keys(tags).map((tag) => ({
+//       params: {
+//         tag,
+//       },
+//     })),
+//     fallback: false,
+//   }
+// }
 
-export const getStaticProps: GetStaticProps<{ posts: PostFrontMatter[]; tag: string }> = async (
-  context
-) => {
+// export const getStaticProps: GetStaticProps<{ posts: PostFrontMatter[]; tag: string }> = async (
+//   context
+// ) => {
+//   const tag = context.params.tag as string
+//   // const allPosts = await getAllFilesFrontMatter('blog')
+//   const allPosts = transformData(await getArticleList())
+
+//   const filteredPosts = allPosts.filter(
+//     (post) => post.draft !== true && post.tags.map((t) => kebabCase(t)).includes(tag)
+//   )
+
+//   // rss
+//   if (filteredPosts.length > 0) {
+//     const rss = generateRss(filteredPosts, `tags/${tag}/feed.xml`)
+//     const rssPath = path.join(root, 'public', 'tags', tag)
+//     fs.mkdirSync(rssPath, { recursive: true })
+//     fs.writeFileSync(path.join(rssPath, 'feed.xml'), rss)
+//   }
+
+//   return { props: { posts: filteredPosts, tag } }
+// }
+
+export async function getServerSideProps(context) {
   const tag = context.params.tag as string
   // const allPosts = await getAllFilesFrontMatter('blog')
   const allPosts = transformData(await getArticleList())
@@ -41,14 +61,6 @@ export const getStaticProps: GetStaticProps<{ posts: PostFrontMatter[]; tag: str
   const filteredPosts = allPosts.filter(
     (post) => post.draft !== true && post.tags.map((t) => kebabCase(t)).includes(tag)
   )
-
-  // rss
-  if (filteredPosts.length > 0) {
-    const rss = generateRss(filteredPosts, `tags/${tag}/feed.xml`)
-    const rssPath = path.join(root, 'public', 'tags', tag)
-    fs.mkdirSync(rssPath, { recursive: true })
-    fs.writeFileSync(path.join(rssPath, 'feed.xml'), rss)
-  }
 
   return { props: { posts: filteredPosts, tag } }
 }

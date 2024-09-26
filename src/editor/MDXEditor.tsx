@@ -194,9 +194,9 @@ export default function MDXEditor({ initialValue, setContent, readOnly }) {
               {/* <div className="playground-result">{mod.default({})}</div> */}
               <MDXContent
                 components={{
-                  h1(props) {
-                    return <h2 {...props} />
-                  },
+                  // h1(props) {
+                  //   return <h2 {...props} />
+                  // },
                   Button,
                 }}
               />
@@ -272,16 +272,6 @@ export default function MDXEditor({ initialValue, setContent, readOnly }) {
     <>
       <div className="flex">
         <div className="w-1/2">
-          {/* <Editor
-            ref={editorRef}
-            value={value}
-            onChange={(event) => {
-              setValue(event.target.value)
-              if (setContent) setContent(event.target.value)
-            }}
-            onScroll={() => handleScroll(editorRef, previewRef)}
-          /> */}
-
           <div className="h-full w-full border-l p-4">
             <textarea
               ref={editorRef}
@@ -301,7 +291,7 @@ export default function MDXEditor({ initialValue, setContent, readOnly }) {
           <div
             ref={previewRef}
             // className="prose max-w-none break-words pb-8 pt-10 dark:prose-dark"
-            className="h-full w-full border-l p-4"
+            className="prose h-full w-full max-w-none break-words border-l p-4 pb-8 pt-10 dark:prose-dark"
             style={{
               // backgroundColor: 'dark',
               height: '60vh',
@@ -313,13 +303,6 @@ export default function MDXEditor({ initialValue, setContent, readOnly }) {
           </div>
         </div>
       </div>
-
-      {/* {compiledResult.ok ? compiledResult.value : (
-        <div>
-          <p>Could not compile code:</p>
-          <DisplayError error={compiledResult.value} />
-        </div>
-      )} */}
     </>
   )
 }
