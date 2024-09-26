@@ -20,10 +20,10 @@ function isTokenExpired(token) {
   }
 }
 
-const product_url = 'http://testshell.pythonanywhere.com/api'
-// const product_url = "http://127.0.0.1:8000/api";
-const dev_url = 'http://192.168.0.106:8000/api'
-// const dev_url = "http://192.168.0.100:8000/api";
+// const product_url = 'http://testshell.pythonanywhere.com/api'
+const product_url = 'http://127.0.0.1:8000/api'
+// const dev_url = 'http://192.168.0.106:8000/api'
+const dev_url = 'http://127.0.0.1:8000/api'
 export const apiUrl = process.env.NODE_ENV === 'production' ? product_url : dev_url
 
 //设置axios基础路径
@@ -77,7 +77,7 @@ service.interceptors.request.use(
 service.interceptors.response.use((response) => {
   //根据返回不同的状态码做不同的事情
   // 这里一定要和后台开发人员协商好统一的错误状态码
-  // console.log("response:", response)
+  // console.log("=====response:", response)
   if (response.status) {
     switch (response.status) {
       case 200:
