@@ -17,13 +17,13 @@ interface Props {
 const LayoutWrapper = ({ children }: Props) => {
   const [navs, setNavs] = useState([])
 
-  useEffect(() => {
-    getPageList().then((pages) => {
-      console.log('pages:', pages)
+  // useEffect(() => {
+  //   getPageList().then((pages) => {
+  //     console.log('pages:', pages)
 
-      setNavs(pages.map((page) => ({ href: `/${page.url}`, title: page.title })))
-    })
-  }, [])
+  //     setNavs(pages.map((page) => ({ href: `/${page.url}`, title: page.title })))
+  //   })
+  // }, [])
 
   return (
     <SectionContainer>
@@ -57,7 +57,7 @@ const LayoutWrapper = ({ children }: Props) => {
                 </Link>
               ))}
 
-              {navs.map((link) => (
+              {/* {navs.map((link) => (
                 <Link
                   key={link.title}
                   href={link.href}
@@ -65,7 +65,7 @@ const LayoutWrapper = ({ children }: Props) => {
                 >
                   {link.title}
                 </Link>
-              ))}
+              ))} */}
             </div>
 
             <div className="ml-1 mr-1 flex items-center sm:ml-4">

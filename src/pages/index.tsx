@@ -13,21 +13,15 @@ import Hero from '@/components/Hero'
 
 const MAX_DISPLAY = 5
 
-// export const getStaticProps: GetStaticProps<{ posts: PostFrontMatter[] }> = async () => {
-//   const posts = await getAllFilesFrontMatter('blog')
+export const getStaticProps: GetStaticProps<{ posts: PostFrontMatter[] }> = async () => {
+  const posts = await getAllFilesFrontMatter('blog')
 
-//   return { props: { posts } }
-// }
+  console.log('posts:', posts)
 
-export async function getServerSideProps(context) {
-  const posts = transformData(await getArticleList())
-
-  return {
-    props: {
-      posts,
-    },
-  }
+  return { props: { posts } }
 }
+
+//
 
 export default function Home({ posts }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (

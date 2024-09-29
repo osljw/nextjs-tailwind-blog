@@ -58,6 +58,7 @@ export async function getServerSideProps(context) {
   // const allPosts = await getAllFilesFrontMatter('blog')
   const allPosts = transformData(await getArticleList())
 
+  console.log('allPosts====', allPosts)
   const filteredPosts = allPosts.filter(
     (post) => post.draft !== true && post.tags.map((t) => kebabCase(t)).includes(tag)
   )

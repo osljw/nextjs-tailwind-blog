@@ -23,7 +23,7 @@ function isTokenExpired(token) {
 // const product_url = 'http://testshell.pythonanywhere.com/api'
 const product_url = 'http://127.0.0.1:8000/api'
 // const dev_url = 'http://192.168.0.106:8000/api'
-const dev_url = 'http://127.0.0.1:8000/api'
+const dev_url = 'http://127.0.0.1:8001/api'
 export const apiUrl = process.env.NODE_ENV === 'production' ? product_url : dev_url
 
 //设置axios基础路径
