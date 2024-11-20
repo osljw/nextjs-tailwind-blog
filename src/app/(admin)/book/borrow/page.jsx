@@ -1,7 +1,48 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { Table, Switch, Button, Breadcrumb, Divider, DatePicker } from 'antd'
+
 import { borrow } from '@/lib/api/book'
+import RequireAuth from '@/components/RequireAuth'
+
+const columns = [
+  {
+    title: 'ID',
+    dataIndex: 'id',
+    key: 'id',
+  },
+  {
+    title: '书名',
+    dataIndex: 'title',
+    key: 'title',
+  },
+  {
+    title: '借阅日期',
+    dataIndex: 'url',
+    key: 'url',
+    render: (url, record) => {
+      return (
+        <>
+          <DatePicker onChange={onChange} />
+        </>
+      )
+    },
+  },
+  {
+    title: '归还日期',
+    dataIndex: 'valid',
+    render: (_, record) => (
+      // <Switch defaultChecked={record.valid} onChange={handleSwitchChange(record.id)} />
+      <DatePicker onChange={onChange} />
+    ),
+  },
+  {
+    title: '备注',
+    dataIndex: 'title',
+    key: 'title',
+  },
+]
 
 const AdminLendBook = () => {
   const [bookIds, setBookIds] = useState('')
@@ -42,8 +83,10 @@ const AdminLendBook = () => {
       />
       {/* <input type="number" placeholder="User ID" value={userId} onChange={(e) => setUserId(e.target.value)} /> */}
       <button onClick={handleLend}>Lend Books</button>
+
+      <Table rowKey={(record) => record.id} columns={columns} dataSource={bookIds} />
     </div>
   )
 }
 
-export default AdminLendBook
+export default RequireAuth(AdminLendBook)
