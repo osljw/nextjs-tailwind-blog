@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Table, Switch, Button, Breadcrumb, Divider, DatePicker } from 'antd'
+import { Table, Switch, Button, Breadcrumb, Divider, DatePicker, Segmented } from 'antd'
 
 import { borrow } from '@/lib/api/book'
 import RequireAuth from '@/components/RequireAuth'
@@ -46,6 +46,13 @@ const columns = [
 
 const AdminLendBook = () => {
   const [bookIds, setBookIds] = useState('')
+  // 用于存储当前选中的Segmented选项
+  const [selectedOption, setSelectedOption] = useState('全部书籍')
+
+  // 根据选中的选项切换要展示的表格组件
+  const handleSegmentedChange = (value) => {
+    setSelectedOption(value)
+  }
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -84,6 +91,11 @@ const AdminLendBook = () => {
       {/* <input type="number" placeholder="User ID" value={userId} onChange={(e) => setUserId(e.target.value)} /> */}
       <button onClick={handleLend}>Lend Books</button>
 
+      <Segmented options={['全部书籍', '待借阅', '我的借阅']} onChange={handleSegmentedChange} />
+
+      {/* {selectedOption === '全部书籍' && <AllBooksTable data={allBooksData} />} */}
+      {/* {selectedOption === '待借阅' && <ToBorrowTable data={toBorrowData} />}
+      {selectedOption === '我的借阅' && <MyBorrowTable data={myBorrowData} />} */}
       <Table rowKey={(record) => record.id} columns={columns} dataSource={bookIds} />
     </div>
   )
