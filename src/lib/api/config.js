@@ -6,6 +6,16 @@ import { jwtDecode } from 'jwt-decode'
 //     ? 'http://testshell.pythonanywhere.com/api'
 //     : 'http://192.168.0.106:8000/api'
 
+export function isValidToken() {
+  const token = window.localStorage.getItem('token') || window.sessionStorage.getItem('token')
+
+  if (token && !isTokenExpired(token)) {
+    return true
+  } else {
+    return false
+  }
+}
+
 function isTokenExpired(token) {
   try {
     const decoded = jwtDecode(token)
@@ -51,7 +61,7 @@ service.interceptors.request.use(
       //   config.headers['Authorization'] = 'JWT ' + token
       // }
 
-      // console.log("===token:", token)
+      console.log('===token:', token)
 
       if (token && isTokenExpired(token)) {
         // const response = await apiClient.post('/api/token/refresh/', { refresh: refreshToken });
@@ -61,7 +71,8 @@ service.interceptors.request.use(
         localStorage.removeItem('token')
         // config.headers.Authorization = `JWT ${newAccessToken}`;
       } else if (token) {
-        config.headers.Authorization = `JWT ${token}`
+        // config.headers.Authorization = `JWT ${token}`
+        config.headers.Authorization = `Bearer ${token}`
       }
     }
 

@@ -31,7 +31,8 @@ export default function Login() {
       .then((response) => {
         // 处理登录成功后的逻辑，例如保存 token 到本地存储
         console.log('登录成功', response)
-        localStorage.setItem('token', response.token)
+        // localStorage.setItem('token', response.token )
+        localStorage.setItem('token', response.access)
         // router.push('/admin')
         router.back()
       })

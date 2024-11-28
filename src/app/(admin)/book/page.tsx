@@ -54,4 +54,5 @@ const AdminLendBook = () => {
   )
 }
 
-export default RequireAuth(AdminLendBook)
+// export default RequireAuth(AdminLendBook)
+export default AdminLendBook
