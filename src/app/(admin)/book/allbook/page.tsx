@@ -1,12 +1,16 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { Table, DatePicker, Button } from 'antd'
+
+import LoginModal from '@/components/user/LoginModal'
 import { borrow, get_all_book } from '@/lib/api/book'
+import { login } from '@/lib/api/login'
 import { error } from 'console'
 
 const AllBooksTable = (props) => {
   const [allBook, setAllBook] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
+  const [isModalVisible, setIsModalVisible] = useState(false)
 
   useEffect(() => {
     get_all_book(searchTerm)
@@ -73,6 +77,10 @@ const AllBooksTable = (props) => {
   const handleBorrow = async (bookId) => {
     borrow([bookId])
       .then((data) => {
+        if (data && data.status === 401) {
+          setIsModalVisible(true)
+          return
+        }
         get_all_book(searchTerm)
           .then((data) => setAllBook(data))
           .catch((error) => {
@@ -83,7 +91,37 @@ const AllBooksTable = (props) => {
       })
       .catch((error) => {
         console.error('借阅操作出现错误：', error)
+        if (error.response.status === 401) {
+          setIsModalVisible(true)
+        }
       })
+  }
+
+  const handleLogin = (values) => {
+    // 向后端发送登录请求
+    login({
+      username: values.username,
+      password: values.password,
+    })
+      .then((response) => {
+        // 处理登录成功后的逻辑，例如保存 token 到本地存储
+        console.log('登录成功', response)
+        localStorage.setItem('token', response.access)
+
+        setIsModalVisible(false)
+
+        // onLoginSuccess();
+        // form.resetFields();
+        // setLoading(false);
+        return true
+      })
+      .catch((error) => {
+        return false
+      })
+  }
+
+  const handleCancel = () => {
+    setIsModalVisible(false)
   }
 
   return (
@@ -96,6 +134,8 @@ const AllBooksTable = (props) => {
       />
       <button onClick={handleSearch}>搜索</button>
       <Table rowKey={(record) => record.id} columns={columns} dataSource={allBook} />
+
+      <LoginModal visible={isModalVisible} onLogin={handleLogin} onCancel={handleCancel} />
     </div>
   )
 }
