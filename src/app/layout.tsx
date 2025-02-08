@@ -1,4 +1,5 @@
 import React from 'react'
+import { AntdRegistry } from '@ant-design/nextjs-registry'
 
 export const metadata = {
   title: 'web title',
@@ -11,7 +12,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body
       // className="bg-white text-black antialiased dark:bg-gray-900 dark:text-white"
       >
-        {children}
+        {/* {children} */}
+        <AntdRegistry>{children}</AntdRegistry>
       </body>
     </html>
   )

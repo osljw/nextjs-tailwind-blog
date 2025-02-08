@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@ant-design/cssinjs": "^1.17.2",
+    "@ant-design/nextjs-registry": "^1.0.2",
     "@fontsource/inter": "4.5.2",
     "@mailchimp/mailchimp_marketing": "^3.0.58",
     "@mdx-js/mdx": "^3.0.0",

@@ -43,7 +43,7 @@ export const POSTS_PER_PAGE = 5
 export async function getServerSideProps(context) {
   // const posts = transformData(await res.json())
   const posts = transformData(await getArticleList())
-  // console.log('Blog getServerSideProps:', posts)
+  console.log('Blog getServerSideProps:', posts)
 
   // const posts = await getAllFilesFrontMatter('blog')
   // console.log("after trans posts:", posts)

@@ -79,11 +79,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function PostPage({
-  posts,
-  initialDisplayPosts,
-  pagination,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function PostPage({ posts, initialDisplayPosts, pagination }) {
   return (
     <>
       <PageSEO title={siteMetadata.title} description={siteMetadata.description} />

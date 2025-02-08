@@ -6,7 +6,7 @@ export function transformData(oldData) {
   //   console.log('oldData:', oldData)
 
   const newData = oldData.map((oldItem) => {
-    const { id, title, create_time: date, update_time: lastmod, tags, is_show: draft } = oldItem
+    const { id, title, create_time: date, update_time: lastmod, /*tags,*/ is_show: draft } = oldItem
     const summary = '' // 添加新的摘要字段
     const images = [] // 添加新的图片字段
     const layout = 'PostLayout' // 添加新的布局字段
@@ -17,7 +17,7 @@ export function transformData(oldData) {
       title,
       date,
       lastmod,
-      tags,
+      tags: [],
       draft: !draft,
       summary,
       images,
