@@ -144,17 +144,17 @@ export default function Page() {
       },
     },
 
-    {
-      title: 'Tags',
-      dataIndex: 'tags',
-      render: (tags) => (
-        <>
-          {tags.map((tag) => (
-            <Tag key={tag}>{tag}</Tag>
-          ))}
-        </>
-      ),
-    },
+    // {
+    //   title: 'Tags',
+    //   dataIndex: 'tags',
+    //   render: (tags) => (
+    //     <>
+    //       {tags.map((tag) => (
+    //         <Tag key={tag}>{tag}</Tag>
+    //       ))}
+    //     </>
+    //   ),
+    // },
     {
       title: '创建时间',
       dataIndex: 'create_time',

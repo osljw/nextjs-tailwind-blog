@@ -146,16 +146,16 @@ import MDXEditor from '@/editor/MDXEditor'
 //   }
 // }
 
-// export async function getServerSideProps({ params }) {
-//   const slug = (params.slug as string[]).join('/')
-//   const post = await getPostBySlug(slug)
+export async function getServerSideProps({ params }) {
+  const slug = (params.slug as string[]).join('/')
+  const post = await getPostBySlug(slug)
 
-//   return {
-//     props: {
-//       post,
-//     },
-//   }
-// }
+  return {
+    props: {
+      post,
+    },
+  }
+}
 
 export default function Blog({
   post,
@@ -163,6 +163,7 @@ export default function Blog({
   prev,
   next,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
+  console.log('blog [id] post', post)
   if (post.type === 'html') {
     return (
       <>
