@@ -9,7 +9,7 @@ export async function getArticleList(data = {}) {
     }
   })
 
-  // console.log('=========article request:', params.toString())
+  console.log('=========article request:', params.toString())
   const res = await service.get(`/article?${params.toString()}`)
   // console.log("======res:", res)
   return res
