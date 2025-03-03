@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import React, { useState, useEffect } from 'react'
 import { Table, Pagination, Spin, Input, Select } from 'antd'
 
@@ -24,6 +25,16 @@ const ArticleList = () => {
       dataIndex: 'title',
       key: 'title',
       sorter: true,
+      render: (text, record) => (
+        <Link
+          href={`/article/${record.id}`}
+          className="text-blue-600 hover:text-blue-800"
+          // 可添加预加载行为
+          prefetch={false}
+        >
+          {text}
+        </Link>
+      ),
     },
     {
       title: '创建时间',
@@ -32,11 +43,11 @@ const ArticleList = () => {
       sorter: true,
       render: (text) => new Date(text).toLocaleString(),
     },
-    {
-      title: '操作',
-      key: 'action',
-      render: () => <a>查看详情</a>,
-    },
+    // {
+    //   title: '操作',
+    //   key: 'action',
+    //   render: () => <a>查看详情</a>,
+    // },
   ]
 
   useEffect(() => {

@@ -163,7 +163,7 @@ export default function Blog({
   prev,
   next,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  console.log('blog [id] post', post)
+  console.log('======blog [id] post', post)
   if (post.type === 'html') {
     return (
       <>

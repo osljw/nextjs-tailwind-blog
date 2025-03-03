@@ -5,7 +5,7 @@ import { dateSortDesc } from './utils'
 export function transformData(oldData) {
   //   console.log('oldData:', oldData)
 
-  const newData = oldData.map((oldItem) => {
+  const newData = oldData.results.map((oldItem) => {
     const { id, title, create_time: date, update_time: lastmod, /*tags,*/ is_show: draft } = oldItem
     const summary = '' // 添加新的摘要字段
     const images = [] // 添加新的图片字段
