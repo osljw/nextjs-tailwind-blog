@@ -123,7 +123,7 @@ const ArticleList = () => {
           onChange={handleTableChange}
         />
 
-        <div className="mt-4 flex justify-end">
+        <div className="mt-4 flex justify-center">
           <Pagination
             current={pagination.current}
             pageSize={pagination.pageSize}
