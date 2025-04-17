@@ -16,10 +16,10 @@ const ContentSecurityPolicy = `
 
 const securityHeaders = [
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
-  {
-    key: 'Content-Security-Policy',
-    value: ContentSecurityPolicy.replace(/\n/g, ''),
-  },
+  // {
+  //   key: 'Content-Security-Policy',
+  //   value: ContentSecurityPolicy.replace(/\n/g, ''),
+  // },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
   {
     key: 'Referrer-Policy',
@@ -56,6 +56,7 @@ const securityHeaders = [
  * @type {import('next/dist/next-server/server/config').NextConfig}
  **/
 module.exports = withBundleAnalyzer({
+  output: 'standalone',
   reactStrictMode: true,
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   eslint: {
@@ -117,6 +118,18 @@ module.exports = withBundleAnalyzer({
       test: /\.svg$/,
       use: ['@svgr/webpack'],
     })
+
+    // config.module.rules.push({
+    //   test: /\.json$/,
+    //   type: 'javascript/auto',
+    //   use: 'json-loader',
+    // })
+
+    // // 兼容旧模块的 JSON 加载
+    // config.resolve.fallback = {
+    //   ...config.resolve.fallback,
+    //   'json-loader': require.resolve('json-loader'),
+    // }
 
     return config
   },

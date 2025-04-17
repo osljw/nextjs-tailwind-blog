@@ -17,6 +17,10 @@ export async function getArticleCategory(id) {
   return service.get(`/article/category/${id}`)
 }
 
+export async function getCategoryArticles(id) {
+  return service.get(`/article/category/${id}/articles`)
+}
+
 // export async function postArticle(data) {
 //   return service.post(`/article`, data)
 // }

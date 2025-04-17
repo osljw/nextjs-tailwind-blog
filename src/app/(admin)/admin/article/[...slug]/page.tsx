@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { Form } from 'antd'
+import { Form, Select } from 'antd'
 import { Button, Radio, Input, Breadcrumb } from 'antd'
 import { message } from 'antd'
 
@@ -12,6 +12,7 @@ import TinymceEditor from '@/editor/TinymceEditor'
 import MDXEditor from '@/editor/MDXEditor'
 
 import { getArticle, postArticle, putArticle, deleteArticle } from '@/lib/api/article'
+import { getArticleCategoryList } from '@/lib/api/category'
 
 const layout = {
   labelCol: {
@@ -42,6 +43,8 @@ export default function Page({ params }) {
   const router = useRouter()
   const [post, setPost] = useState({ type: createMode ? 'mdx' : undefined })
   const [content, setContent] = useState('')
+  const [categoryOptions, setCategoryOptions] = useState([])
+  const [categories, setCategories] = useState([])
   const [form] = Form.useForm()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [messageApi, contextHolder] = message.useMessage()
@@ -51,19 +54,34 @@ export default function Page({ params }) {
       getArticle(slug).then((value) => {
         setPost(value)
         setContent(value.body)
+        setCategories(value.categories)
         form.setFieldsValue({
           title: value.title,
           type: value.type,
         })
       })
+
+      getArticleCategoryList().then((data) => {
+        setCategoryOptions(data)
+      })
     }
   }, [createMode, slug, form])
+
+  useEffect(() => {
+    if (categoryOptions.length > 0 && post.categories) {
+      form.setFieldsValue({
+        categories: post.categories.map((c) => c.id),
+      })
+    }
+  }, [categoryOptions, post.categories]) // 依赖数据变化
 
   const updateArticle = async (values) => {
     if (isSubmitting) {
       // 请求正在进行中，不执行重复操作
       return
     }
+
+    console.log('put values:', values)
 
     setIsSubmitting(true)
 
@@ -73,10 +91,8 @@ export default function Page({ params }) {
         title: values.title,
         body: content,
         type: values.type,
-        tags: ['tag1', 'tag2'],
-        auth: {
-          username: 'admin',
-        },
+        // tags: ['tag1', 'tag2'],
+        categories: values.categories,
       })
       console.log('putArticle response:', response)
 
@@ -176,7 +192,16 @@ export default function Page({ params }) {
     })
   }
 
-  console.log('article slug:', params.slug, ' post:', post)
+  console.log(
+    'article slug:',
+    params.slug,
+    ' post:',
+    post,
+    ' categoryOptions:',
+    categoryOptions,
+    ' category:',
+    categories
+  )
   //   console.log('content:', content)
 
   const handleTypeChange = (event) => {
@@ -211,9 +236,6 @@ export default function Page({ params }) {
           {
             title: <Link href="/admin/article">Article</Link>,
           },
-          //   {
-          //     title: <a href="">Application List</a>,
-          //   },
           {
             title: params.slug,
           },
@@ -225,12 +247,10 @@ export default function Page({ params }) {
         {...layout}
         name="nest-messages"
         onFinish={onFinish}
-        // style={{
-        //     maxWidth: 600,
-        // }}
         validateMessages={validateMessages}
         initialValues={{
           type: post.type,
+          categories: post.categories?.map((c) => c.id),
         }}
       >
         <Form.Item
@@ -246,63 +266,29 @@ export default function Page({ params }) {
         </Form.Item>
 
         <Form.Item
-          name={['type']}
-          label="文章类型"
-          // hidden={!createMode}
-          // rules={[
-          //   {
-          //     required: true,
-          //   },
-          // ]}
+          name="categories"
+          label="文章分类"
+          rules={[{ required: true, message: '请至少选择一个分类' }]}
         >
-          <Radio.Group
-            // defaultValue={post.type}
-            value={post.type}
-            buttonStyle="solid"
-            onChange={handleTypeChange}
-          >
+          <Select
+            mode="multiple"
+            placeholder="选择分类"
+            options={categoryOptions} // 从接口获取的分类数据
+            fieldNames={{ label: 'name', value: 'id' }}
+            optionFilterProp="name"
+            showSearch
+          />
+        </Form.Item>
+
+        <Form.Item name={['type']} label="文章类型">
+          <Radio.Group value={post.type} buttonStyle="solid" onChange={handleTypeChange}>
             <Radio.Button value="mdx">MDX</Radio.Button>
             <Radio.Button value="html">HTML</Radio.Button>
           </Radio.Group>
         </Form.Item>
 
-        {/* <Form.Item
-                    name={['user', 'email']}
-                    label="Email"
-                    rules={[
-                        {
-                            type: 'email',
-                        },
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    name={['user', 'age']}
-                    label="Age"
-                    rules={[
-                        {
-                            type: 'number',
-                            min: 0,
-                            max: 99,
-                        },
-                    ]}
-                >
-                    <InputNumber />
-                </Form.Item> */}
-        <Form.Item label="文章内容">
-          {/* {post && post.type === 'html' && createMode ? (
-            <TinymceEditor initialValue="" setContent={setContent} />
-          ) : (
-            <TinymceEditor initialValue={post && post.body} setContent={setContent} />
-          )}
+        <Form.Item label="文章内容">{renderEditor()}</Form.Item>
 
-          {post && post.type === 'mdx' && <MDXEditor initialValue={post && post.body} />} */}
-          {renderEditor()}
-        </Form.Item>
-        {/* <Form.Item name={['user', 'introduction']} label="Introduction">
-                    <Input.TextArea />
-                </Form.Item> */}
         <Form.Item
           wrapperCol={{
             // ...layout.wrapperCol,

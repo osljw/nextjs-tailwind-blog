@@ -1,0 +1,18 @@
+{
+  "models": [
+    {
+      "id": "42_YM002459_Low",
+      "name": "YM002459 Low",
+      "obj": "/model/42_YM002459_Low/42_YM002459_Low.obj",
+      "mtl": "/model/42_YM002459_Low/42_YM002459_Low.mtl",
+      "thumb": "/model/42_YM002459_Low/T_42_YM002459_Low_4K.jpg"
+    },
+    {
+      "id": "78_YM007422_Low",
+      "name": "YM007422 Low",
+      "obj": "/model/78_YM007422_Low/78_YM007422_Low.obj",
+      "mtl": "/model/78_YM007422_Low/78_YM007422_Low.mtl",
+      "thumb": "/model/78_YM007422_Low/T_78_YM007422_Low_4K.jpg"
+    }
+  ]
+}

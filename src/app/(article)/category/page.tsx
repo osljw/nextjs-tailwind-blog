@@ -1,45 +1,56 @@
 'use client'
-
-import React, { useEffect, useState } from 'react'
-import { BookOutlined, TagOutlined, ClockCircleOutlined, RightOutlined } from '@ant-design/icons'
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
 
 import { getArticleCategoryList } from '@/lib/api/category'
 
-// 模拟数据
-const articles = [
-  {
-    id: 1,
-    title: 'React Hooks最佳实践',
-    category: '技术',
-    excerpt: '深入探讨React Hooks的高级用法和常见问题解决方案...',
-    date: '2024-03-15',
-    readTime: '8分钟',
-  },
-  // 更多文章数据...
-]
+interface CategoryCardProps {
+  category: Category
+}
 
-// const categories = ['全部', '技术', '生活', '旅行', '科技'];
+function CategoryCard({ category }: CategoryCardProps) {
+  const formatDate = (isoString: string) => {
+    return new Date(isoString).toLocaleDateString()
+  }
 
-const CategoryPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState('全部')
-  const [categories, setCategories] = useState([]) // 新增状态：存储分类数据
-  const [loading, setLoading] = useState(false) // 新增状态：加载状态（可选）
+  return (
+    <div className="rounded-xl bg-white shadow-md transition-all hover:shadow-lg">
+      <div className="p-6">
+        <div className="mb-4 flex items-start justify-between">
+          <h3 className="text-xl font-semibold text-gray-800">{category.name}</h3>
+          <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
+            {category.total} 篇
+          </span>
+        </div>
+
+        <div className="text-sm text-gray-500">
+          <i className="fas fa-clock mr-2"></i>
+          {formatDate(category.create_time)}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+interface Category {
+  id: number
+  name: string
+  total: number
+  create_time: string
+}
+
+export default function ReadonlyCategoryPage() {
+  const [categories, setCategories] = useState<Category[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        setLoading(true)
-        const categoriesData = await getArticleCategoryList()
-        // 假设接口返回数据在 res.data 中（根据实际接口调整）
-        setCategories(categoriesData || [])
-
-        const firstValidCategory =
-          categoriesData.find((cat) => cat.articles.length > 0) || categoriesData[0]
-        if (firstValidCategory) {
-          setSelectedCategory(firstValidCategory.name)
-        }
-      } catch (error) {
-        console.error('获取分类列表失败:', error)
+        const data = await getArticleCategoryList()
+        setCategories(data)
+      } catch (err) {
+        setError(err.message)
       } finally {
         setLoading(false)
       }
@@ -48,65 +59,59 @@ const CategoryPage = () => {
     fetchCategories()
   }, [])
 
-  const currentArticles = categories.find((cat) => cat.id === selectedCategory)?.articles || []
+  if (loading) return <LoadingState />
+  if (error) return <ErrorState message={error} />
+  if (!categories.length) return <EmptyState />
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <main className="mx-auto max-w-6xl px-4 py-8">
-        <div className="mb-8 rounded-lg bg-white p-4 shadow-sm">
-          <div className="flex flex-wrap gap-3">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors
-                  ${
-                    selectedCategory === category.id
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-              >
-                {category.name}
-              </button>
-            ))}
-          </div>
-        </div>
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="mx-auto max-w-7xl">
+        <h1 className="mb-8 text-3xl font-bold text-gray-800">文章分类</h1>
 
-        {loading ? (
-          <div>加载中...</div>
-        ) : (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {currentArticles.map((article) => (
-              <article
-                key={article.id}
-                className="rounded-lg bg-white shadow-sm transition-shadow hover:shadow-md"
-              >
-                <div className="p-6">
-                  <div className="mb-3 flex items-center text-sm text-gray-500">
-                    <TagOutlined className="mr-1" />
-                    <span>{article.category}</span>
-                  </div>
-                  <h2 className="mb-2 text-xl font-semibold">{article.title}</h2>
-                  <p className="mb-4 text-gray-600">{article.excerpt}</p>
-                  <div className="flex items-center justify-between text-sm text-gray-500">
-                    <span className="flex items-center">
-                      <ClockCircleOutlined className="mr-1" />
-                      {article.readTime}
-                    </span>
-                    <span>{article.date}</span>
-                  </div>
-                </div>
-                <button className="flex w-full items-center justify-center rounded-b-lg bg-gray-50 py-3 hover:bg-gray-100">
-                  阅读全文
-                  <RightOutlined className="ml-2" style={{ fontSize: '14px' }} />
-                </button>
-              </article>
-            ))}
-          </div>
-        )}
-      </main>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {categories.map((category) => (
+            <Link
+              key={category.id}
+              href={`/category/${category.id}`}
+              className="transition-shadow hover:shadow-lg"
+            >
+              <CategoryCard category={category} />
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
 
-export default CategoryPage
+// 简化版加载状态
+const LoadingState = () => (
+  <div className="flex min-h-screen items-center justify-center">
+    <div className="animate-pulse">
+      <div className="mb-8 h-12 w-48 rounded-lg bg-gray-200"></div>
+      <div className="grid grid-cols-4 gap-4">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-32 rounded-xl bg-gray-200"></div>
+        ))}
+      </div>
+    </div>
+  </div>
+)
+
+// 简化版错误状态
+const ErrorState = ({ message }: { message: string }) => (
+  <div className="flex min-h-screen flex-col items-center justify-center">
+    <div className="mb-4 text-lg text-red-600">
+      <i className="fas fa-exclamation-triangle mr-2"></i>
+      加载失败：{message}
+    </div>
+  </div>
+)
+
+// 简化版空状态
+const EmptyState = () => (
+  <div className="flex min-h-screen flex-col items-center justify-center text-gray-500">
+    <i className="fas fa-folder-open mb-4 text-4xl"></i>
+    <h3 className="text-xl">暂无分类数据</h3>
+  </div>
+)
