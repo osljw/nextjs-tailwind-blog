@@ -3,6 +3,7 @@ const headerNavLinks = [
   // { href: '/tags', title: '标签' },
   { href: '/article', title: '文章article' },
   { href: '/category', title: '类别' },
+  { href: '/collection', title: '藏品' },
   { href: '/3dmodel', title: '模型' },
   { href: '/admin', title: '管理' },
 

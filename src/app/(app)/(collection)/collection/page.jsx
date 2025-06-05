@@ -6,7 +6,6 @@ import { Space, Table, Card, Pagination, Spin, Input, Select } from 'antd'
 import { CaretUpOutlined, CaretDownOutlined, CalendarOutlined } from '@ant-design/icons'
 
 import { getArticleList } from '@/lib/api/article'
-import SortArrows from '@/components/SortArrows'
 
 const { Search } = Input
 
@@ -162,7 +161,10 @@ const CollectionList = () => {
             ))}
           </div>
 
-          <div className="sticky bottom-0 mt-4 flex justify-center">
+          <div
+            className="sticky bottom-0 mt-4 flex justify-center"
+            style={{ backgroundColor: 'white' }}
+          >
             <Pagination
               current={pagination.current}
               pageSize={pagination.pageSize}
