@@ -51,6 +51,7 @@ export default function Page({ params }) {
 
   useEffect(() => {
     if (!createMode) {
+      // 获取编辑文章数据
       getArticle(slug).then((value) => {
         setPost(value)
         setContent(value.body)
@@ -61,6 +62,11 @@ export default function Page({ params }) {
         })
       })
 
+      getArticleCategoryList().then((data) => {
+        setCategoryOptions(data)
+      })
+    } else {
+      // 创建新的文章
       getArticleCategoryList().then((data) => {
         setCategoryOptions(data)
       })
@@ -91,7 +97,6 @@ export default function Page({ params }) {
         title: values.title,
         body: content,
         type: values.type,
-        // tags: ['tag1', 'tag2'],
         categories: values.categories,
       })
       console.log('putArticle response:', response)
@@ -126,29 +131,16 @@ export default function Page({ params }) {
 
     setIsSubmitting(true)
 
-    console.log('====== request:', {
-      title: values.title,
-      body: content,
-      //   is_show: false,
-      type: values.type,
-      tags: ['tag1', 'tag2'],
-      auth: {
-        // id: 1,
-        username: 'admin',
-      },
-    })
-
     try {
       const response = await postArticle({
         title: values.title,
         body: content,
-        //   is_show: false,
+        categories: values.categories,
         type: values.type,
-        tags: ['tag1', 'tag2'],
-        auth: {
-          // id: 1,
-          username: 'admin',
-        },
+        // auth: {
+        //   // id: 1,
+        //   username: 'admin',
+        // },
       })
       console.log('createArticle response:', response)
 
@@ -206,6 +198,7 @@ export default function Page({ params }) {
 
   const handleTypeChange = (event) => {
     const newValue = event.target.value
+    console.log('handleTypeChange:', newValue)
 
     // 更新 post 对象中的 type 属性
     setPost((prevPost) => ({
@@ -215,10 +208,23 @@ export default function Page({ params }) {
   }
 
   const renderEditor = () => {
+    console.log('renderEditor post.type:', post.type)
     if (post.type === 'html') {
-      return <TinymceEditor initialValue={post.body} setContent={setContent} />
+      return <TinymceEditor initialValue={post.body} setContent={setContent} readOnly={false} />
     } else if (post.type === 'mdx') {
-      return <MDXEditor initialValue={post.body} setContent={setContent} />
+      return <MDXEditor initialValue={post.body} setContent={setContent} readOnly={false} />
+    } else if (post.type === 'external') {
+      return (
+        <div className="p-4">
+          <label className="mb-2 block text-sm font-medium text-gray-700">请输入外链地址：</label>
+          <Input
+            placeholder="https://example.com"
+            defaultValue={post.body}
+            onChange={(e) => setContent(e.target.value)}
+            className="w-full"
+          />
+        </div>
+      )
     }
 
     return null
@@ -284,6 +290,7 @@ export default function Page({ params }) {
           <Radio.Group value={post.type} buttonStyle="solid" onChange={handleTypeChange}>
             <Radio.Button value="mdx">MDX</Radio.Button>
             <Radio.Button value="html">HTML</Radio.Button>
+            <Radio.Button value="external">外链</Radio.Button>
           </Radio.Group>
         </Form.Item>
 

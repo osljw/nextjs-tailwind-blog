@@ -65,6 +65,13 @@ export default function Blog({ params }: Props) {
     )
   }
 
+  // 外链文章跳转
+  if (post.type === 'external') {
+    // router.push(`${post.body}`)
+    window.open(post.body, '_blank') // 编程式新标签页跳转
+    // return
+  }
+
   return (
     <div className="mx-auto flex min-h-screen max-w-4xl flex-col px-4 md:px-8 lg:px-12">
       <div className="flex-grow">
@@ -101,6 +108,18 @@ export default function Blog({ params }: Props) {
           <TinymceEditor initialValue={post.body} readOnly={true} />
         ) : post.type === 'mdx' ? (
           <MDXEditor initialValue={post.body} readOnly={true} />
+        ) : post.type === 'external' ? (
+          <p className="mt-4 animate-pulse text-gray-600">
+            如果页面没有自动跳转，请{' '}
+            <a
+              href={post.body}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline"
+            >
+              点击这里
+            </a>
+          </p>
         ) : null}
       </div>
 

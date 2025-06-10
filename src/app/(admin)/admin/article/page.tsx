@@ -132,6 +132,14 @@ export default function Page() {
       sortOrder: sortOrder,
     },
     {
+      title: '类型',
+      dataIndex: 'type',
+      key: 'type',
+      sorter: true,
+      // defaultSortOrder: defaultSortOrder,
+      // sortOrder: sortOrder,
+    },
+    {
       title: '标题',
       dataIndex: 'title',
       // key: 'name',

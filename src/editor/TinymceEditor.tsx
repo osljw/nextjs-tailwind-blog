@@ -3,7 +3,7 @@ import { useRef } from 'react'
 import { apiUrl } from '@/lib/api/config'
 import { Editor } from '@tinymce/tinymce-react'
 
-// const uploadImage = ()
+const document_base_url = apiUrl.split('/api')[0]
 
 export default function TinymceEditor({ initialValue, setContent, readOnly }) {
   // console.log('TinymceEditor content:', initialValue)
@@ -71,6 +71,8 @@ export default function TinymceEditor({ initialValue, setContent, readOnly }) {
             statusbar: false,
             branding: false,
             content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+
+            document_base_url: `${document_base_url}`,
           }}
           disabled={true}
         />
@@ -170,25 +172,32 @@ export default function TinymceEditor({ initialValue, setContent, readOnly }) {
         // tinymceScriptSrc={process.env.PUBLIC_URL + '/tinymce/tinymce.min.js'}
         tinymceScriptSrc={'/tinymce/tinymce.min.js'}
         onInit={(evt, editor) => {
-          editor.on('paste', function (e) {
-            console.log('oninit paste event =========', e)
-            // var clipboardData = e.clipboardData || window.clipboardData
-            // if (clipboardData && clipboardData.files && clipboardData.files.length) {
-            //   console.log('Pasted image data:', clipboardData)
-            //   e.preventDefault() // 阻止默认粘贴行为
+          editor.ui.registry.addButton('SaveButton', {
+            text: '上传图片',
+            onAction: async () => {
+              const content = editor.getContent()
+              console.log('Content to save:', content)
+              // 在这里添加保存内容的逻辑
 
-            //   var file = clipboardData.files[0]
-            //   var reader = new FileReader()
+              //  获取编辑器中的所有图片节点
+              const images = editor.dom.select('img')
 
-            //   reader.onload = function (event) {
-            //     var dataUrl = event.target.result
+              for (const img of images) {
+                const src = img.getAttribute('src')
+                console.log('img src:', src)
+                // if (src && src.startsWith('blob:')) {
+                //   try {
+                //     const newSrc = await uploadImageFromBlobUrl(src);
+                //     console.log("img src:", src, "newSrc:", src)
+                //     img.setAttribute('src', newSrc);
+                //   } catch (error) {
+                //     console.error('Failed to upload image:', error);
+                //   }
+                // }
+              }
 
-            //     // 在这里可以使用 dataUrl 进行进一步处理，比如上传到服务器、显示预览等
-            //     console.log('Pasted image data:', dataUrl)
-            //   }
-
-            //   reader.readAsDataURL(file)
-            // }
+              await editor.editorUpload.uploadImages()
+            },
           })
 
           editorRef.current = editor
@@ -222,17 +231,20 @@ export default function TinymceEditor({ initialValue, setContent, readOnly }) {
             'pastewordimage',
           ],
           toolbar:
-            'undo redo | blocks | ' +
+            'SaveButton | undo redo | blocks | ' +
             'bold italic forecolor | alignleft aligncenter ' +
             'alignright alignjustify | bullist numlist outdent indent | ' +
             'removeformat | image | help',
 
+          paste_preprocess: paste_preprocess, // 粘贴时预处理, 处理图片链接为blob， 需要开启pastewordimage插件
+
           // images_upload_url: `${apiUrl}/upload`,
 
-          automatic_uploads: false,
-          // images_upload_credentials: true,
-          // images_upload_handler: customImageUploadHandler, // 设置Authorization token
-          paste_preprocess: paste_preprocess, // 粘贴时预处理, 处理图片链接， 需要开启pastewordimage插件
+          automatic_uploads: false, // 关闭自动上传图片
+          images_upload_credentials: true, // 上传验证账号信息
+          images_upload_handler: customImageUploadHandler, // 设置Authorization token
+
+          document_base_url: `${document_base_url}`, // 设置基础URL
 
           // paste_data_images: true,
           // paste_preprocess: paste_preprocess,
