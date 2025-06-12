@@ -234,7 +234,7 @@ export default function TinymceEditor({ initialValue, setContent, readOnly }) {
             'SaveButton | undo redo | blocks | ' +
             'bold italic forecolor | alignleft aligncenter ' +
             'alignright alignjustify | bullist numlist outdent indent | ' +
-            'removeformat | image | help',
+            'removeformat | image | link | help',
 
           paste_preprocess: paste_preprocess, // 粘贴时预处理, 处理图片链接为blob， 需要开启pastewordimage插件
 
@@ -246,10 +246,50 @@ export default function TinymceEditor({ initialValue, setContent, readOnly }) {
 
           document_base_url: `${document_base_url}`, // 设置基础URL
 
-          // paste_data_images: true,
-          // paste_preprocess: paste_preprocess,
-          // paste_postprocess: paste_postprocess,
-          content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+          file_picker_callback: (callback, value, meta) => {
+            const input = document.createElement('input')
+            input.type = 'file'
+            input.accept = meta.filetype === 'image' ? 'image/*' : '*'
+
+            input.onchange = () => {
+              const file = input.files[0]
+              if (!file) return
+
+              // 包装为blobInfo对象
+              const blobInfo = {
+                blob: () => file,
+                filename: () => file.name,
+                id: () => 'picker_' + Date.now(),
+              }
+
+              // 复用images_upload_handler
+              customImageUploadHandler(blobInfo, (percent) => console.log(`Progress: ${percent}%`))
+                .then((url) => {
+                  // callback(url, { alt: file.name });
+                  if (meta.filetype == 'file') {
+                    callback(url, { text: file.name })
+                  }
+
+                  // Provide image and alt text for the image dialog
+                  if (meta.filetype == 'image') {
+                    callback(url, { alt: file.name })
+                  }
+
+                  // Provide alternative source and posted for the media dialog
+                  if (meta.filetype == 'media') {
+                    callback(url, { source2: file.name, poster: 'image.jpg' })
+                  }
+                })
+                .catch((err) => {
+                  alert(err.message || 'Upload failed')
+                  if (err.remove) {
+                    // 如果是图片上传失败且需要移除
+                  }
+                })
+            }
+            input.click()
+          },
+          content_style: 'body {font - family:Helvetica,Arial,sans-serif; font-size:14px }',
         }}
       />
     </>
